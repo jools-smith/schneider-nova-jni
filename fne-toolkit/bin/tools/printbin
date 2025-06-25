@@ -1,0 +1,35 @@
+#!/bin/sh
+
+SCRIPT_DIR=`dirname "$0"`
+LIB="$SCRIPT_DIR/../../lib"
+CLASSES="$SCRIPT_DIR/classes"
+
+### find java executable
+if [ -z "$JAVA_HOME" ]; then
+    if which java > /dev/null 2>&1; then
+        JAVA=`which java`
+    else
+        echo "Couldn't find java; please set JAVA_HOME to a valid location"
+        exit 1
+    fi
+else
+    JAVA="$JAVA_HOME/bin/java"
+    [ ! -f "$JAVA" ] && JAVA="$JAVA_HOME/jre/bin/java"
+    if [ ! -f "$JAVA" ]; then
+        echo "Specified JAVA_HOME, $JAVA_HOME, is missing java executable, please correct."
+        exit 1
+    fi
+fi
+
+FNE_DEBUG_OPTS=
+if [ "true" = "$FNE_DEBUG" ]; then
+    if [ -z "$FNE_DEBUG_PORT" ]; then
+        FNE_DEBUG_PORT=8000
+    fi
+    if [ -z "$FNE_DEBUG_SUSPEND" ]; then
+        FNE_DEBUG_SUSPEND=y
+    fi
+    FNE_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,address=$FNE_DEBUG_PORT,server=y,suspend=$FNE_DEBUG_SUSPEND
+fi
+
+"$JAVA" $FNE_DEBUG_OPTS -cp "$CLASSES:$LIB/flxTools.jar:$LIB/flxBinary.jar:$LIB/EccpressoAll.jar:$LIB/commons-codec-1.16.1.jar" com.flexnet.lm.tools.PrintBinary ${*:+"$@"}

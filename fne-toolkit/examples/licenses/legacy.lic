@@ -1,0 +1,3 @@
+#Sample legacy FNP license certificate template
+INCREMENT f1 demo 1.0 permanent uncounted HOSTID=ANY VENDOR_STRING="This is a sample FNP certificate" SIGN=0
+INCREMENT f2 demo 1.0 permanent uncounted HOSTID=ANY VENDOR_STRING="This is a sample FNP certificate" SIGN=0

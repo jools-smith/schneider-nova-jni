@@ -1,0 +1,48 @@
+--==========================================================================
+-- Sample LUA code supporting callhome
+--==========================================================================
+
+
+l_obf_reason = ""
+
+--==========================================================================
+function l_obf_get_last_hacked_reason()
+--==========================================================================
+    l_obf_true_callback( "s_obf_last_hacked_reason", l_obf_reason)
+end
+
+--==========================================================================
+function l_obf_true_callback( pro, reason )
+--==========================================================================
+    syslog( tostring(pro) .. "s_obf_calling_on_tamper" )
+    local worked,err = pcall(on_tamper, reason )
+    if not worked then
+        syslog( pro .. "\ns_obf_on_tamper_returned " .. tostring( err ) .. " " .. tostring( reason ) )
+    end
+end
+
+--==========================================================================
+function l_obf_set_fne_license_OK( check_value )
+--==========================================================================
+    local pro = "s_obf_set_fne_license_OK "
+    if 1 == check_value then
+        syslog( pro .. "s_obf_enable_hires_license" )
+        tra.enable( "highres" )
+    else
+        syslog( pro .. "s_obf_dont_enable_hires_license__check_value_is " .. tostring(check_value))
+    end
+end
+
+--==========================================================================
+function l_obf_callhome( reason )
+--==========================================================================
+    local pro = "s_obf_callhome "
+    syslog( pro .. "s_obf_reason " .. tostring( reason ) )
+    if type( on_tamper ) == 'function' then -- callbacks not registered yet
+        l_obf_true_callback( pro, reason )
+    else
+        syslog( pro .. "s_obf_saving_reason" )
+        l_obf_reason = reason
+    end
+end
+

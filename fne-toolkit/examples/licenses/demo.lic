@@ -1,0 +1,19 @@
+INCREMENT survey demo 1.0 31-dec-2025 uncounted \
+	VENDOR_STRING="Saudi Arabia, Lodi California" \
+	HOSTID=ID_STRING=1234567890 START=1-may-2009
+INCREMENT highres demo 2.0 permanent uncounted VENDOR_STRING=Global \
+	HOSTID=ID_STRING=1234567890 START=1-may-2009
+INCREMENT download demo 2.0 permanent uncounted \
+	VENDOR_STRING=Global HOSTID=ID_STRING=1234567890 START=1-may-2009
+INCREMENT upload demo 2.0 permanent uncounted VENDOR_STRING=Global \
+	HOSTID=ANY START=1-may-2009
+INCREMENT special demo 1.0 permanent uncounted VENDOR_STRING=Global \
+	HOSTID=ID_STRING=1234567890 START=1-may-2009
+INCREMENT updates demo 1.0 permanent uncounted \
+	HOSTID=ID_STRING=1234567890 START=1-may-2009
+INCREMENT sdchannel demo 1.0 permanent 100 \
+	HOSTID=ID_STRING=1234567890 START=1-may-2009 \
+	VENDOR_STRING="Standard Definition Channels"
+INCREMENT hdchannel demo 1.0 permanent 10 \
+	HOSTID=ID_STRING=1234567890 START=1-may-2009 \
+	VENDOR_STRING="High Definition Channels"

@@ -1,0 +1,73 @@
+--The purpose of file is to declare the details used to generate the script used by the application
+
+local code = load_byte_array( "tra_gen" )
+local security = load( bytes, 0, code, string.len( code ) )()
+
+require("IdentityClient")
+
+declare.strings.CODE = { " code\n", [ "actions" ] = { ["detect_tamper"] = true  } }
+declare.strings.highres = { "highres", ["aliases"] = 2 }
+declare.strings.creating_error_object = { "creating error object" }
+declare.strings.licensing_environment_established = { "licensing environment established" }
+declare.strings.creating_licensing_object = { "creating licensing object" }
+declare.strings._1234567890 = { "1234567890" }
+declare.strings.returning_highres = { "returning highres" }
+declare.strings.acquiring_highres = { "acquiring highres" }
+declare.strings.acquired_highres_license = { "acquired highres license" }
+declare.strings._1_0 = { "1.0" }
+declare.strings.adding_buffer_license_source = { "adding buffer license source" }
+declare.strings.allocating_storage_for_file_name = { "allocating storage for file name" }
+declare.strings.license_file = { "License file " }
+declare.strings.USAGE = { "USAGE" }
+declare.strings.usage = { [[     [binary_license_file]
+
+Attempts to acquire 'highres' feature from a signed binary license file.
+
+If unset, default binary_license_file is: ]]
+}
+declare.strings.new_lines = { "\n\n" }
+declare.strings.license_bin_not_found = { " not found, no license loaded, floating point support not enabled." }
+declare.strings.license_bin = { "license.bin", ["aliases"] = 3 }
+declare.strings.PROMPT = { ">" }
+declare.strings.NEW_LINE = { "\n" }
+declare.strings.please_upgrade = { "Please Upgrade for floating point support\n", ["aliases"] = 2 }
+declare.strings.PROMPT1 = { "Usage:\n\t78.2/2.3=\n\tq quit\n\tc clear\n", ["actions"] = { ["detect_tamper"] = false, ["checksum"] = "FlxCore" } }
+declare.strings.PROMPT2 = { ">", ["actions"] = { ["detect_tamper"] = false } }
+declare.strings.IDENTITY = { get_identity_data() }
+
+declare.variables.ZERO = { 0, ["aliases"] = 7 }
+declare.variables.ONE = { 1 }
+
+declare.snif.run_calc = { ["predicate"] = "acquire_highres",["on_false"] = "lowres",["on_true"] = "highres", ["detect_tamper"] = true  }
+
+options.name = "calc"
+
+options.debug = {
+	['trace'] = false,
+	['allow_failure'] = false,
+	
+}
+
+options.header = "calc demo (c) FlexeraSoftware"
+options.TDT = { ["typename"] = "TFT" }
+options.verify_modules = {
+	[ "windows" ] = {
+		["kernel32"] = { ["checksigned"] = true },
+		["User32"] = { ["checksigned"] = true },
+		["wintrust"] = { ["checksigned"] = true },
+		["crypt32"] = { ["checksigned"] = true },
+		["psapi"] = { ["checksigned"] = true, ["lazy"] = true },
+		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore64" },
+	},
+	[ "macosx" ] = {
+		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore.2024.11" },
+	},
+	[ "linux" ] = {
+		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore64.so.2024.11" },
+	}
+}
+options.report = "report_callback"
+options.register = { "acquire_highres", "lowres", "highres", "report_callback" }
+
+
+return tra_generate( options, declare )

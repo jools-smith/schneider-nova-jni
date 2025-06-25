@@ -1,0 +1,11 @@
+Create your C-format client identity files using pubidutil and printbin 
+and copy them here.  By default, the toolkit device examples look for a 
+file called IdentityClient.h.  A local license server implementation 
+requires a client-server identity file instead, where the examples use 
+the name IdentityClientServer.h. 
+
+File names may be different for your examples or custom digital 
+signature algorithms. 
+
+For more information, see the FlexNet Embedded Getting Started Guide and 
+FlexNet Embedded User Guide. 

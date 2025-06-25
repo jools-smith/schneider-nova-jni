@@ -1,0 +1,71 @@
+--The purpose of file is to declare the details used to generate the script used by the application
+
+local code = load_byte_array( "tra_gen" )
+local security = load( bytes, 0, code, string.len( code ) )()
+
+require("IdentityClient")
+declare.strings.IDENTITY = { get_identity_data() }
+declare.strings.creating_error_object = { "creating error object" }
+declare.strings.licensing_environment_established = { "licensing environment established" }
+declare.strings.creating_licensing_object = { "creating licensing object" }
+declare.strings._1234567890 = { "1234567890" }
+declare.strings.license_bin = { "license.bin", ["aliases"] = 3 }
+declare.strings.USAGE = { "Usage:\n\t78.2/2.3=\n\tq quit\n\tc clear\n>", ["actions"] = { ["detect_tamper"] = true, ["checksigned"] = "FlxCore" } }
+declare.strings.license_bin_not_found = { "License file license.bin not found, no license loaded, floating point support not enabled." }
+declare.strings.adding_buffer_license_source = { "adding buffer license source" }
+
+declare.tra_functions.set_fne_license_OK = { "l_obf_set_fne_license_OK" }
+declare.tra_functions.get_last_hacked_reason = { "l_obf_get_last_hacked_reason" }
+
+options.header = "tra_one (c) FlexeraSoftware"
+options.name = "tra_one"
+options.script = "script"
+
+options.debug = {
+	['trace'] = false,
+	['allow_failure'] = false,
+	
+}
+
+--This option is used to indicate that rerun of the tra-gen utility will be performed
+--By choosing this option, the checksum of the in memory executable is not performed at runtime
+options.one_pass = true
+
+--declare two distinct types of TDT,s the first, 'TFT', is enabled if no tamper has been detected
+--the second 'highres' must be manually enabled, via tra.enable( "highres" ), once it has been
+--determined that this feature is enabled
+options.TDT = { ["typename"] = {"TFT","highres"} }
+
+options.FNE = {}
+
+--first 'hook' to callback to allow any logic inside the tra engine
+options.callhome = "l_obf_callhome"
+
+options.register = { -- callbacks implemented in tra_one.lib
+	"on_tamper", --callback to native 'C' code
+}
+
+options.certificate = {
+	["flex"] = {
+		[ "certificate_requirements" ] = "certificate leaf = H\"72D73F83D211D452883F8E38336C042880870702\" and anchor trusted",
+		[ "signer" ] = "Flexera Software LLC",
+		[ "issuer" ] = "DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1",
+		[ "serialnumber" ] = "07 1c f2 95 af dd ec 8c 60 cd 3c 20 f6 5f e7 fd ",
+	},
+}
+
+options.verify_modules = {
+	[ "windows" ] = {
+		["FlxCore"] = { ["checksigned"] = "flex", ["lazy"] = true, ["target"] = "FlxCore64" },
+	},
+	[ "macosx" ] = {
+		["FlxCore"] = { ["checksigned"] = "flex", ["lazy"] = true, ["target"] = "FlxCore.2024.11" },
+	},
+	[ "linux" ] = {
+		["FlxCore"] = { ["lazy"] = true, ["target"] = "FlxCore64.so.2024.11"},
+	}
+}
+
+
+
+return tra_generate( options, declare )

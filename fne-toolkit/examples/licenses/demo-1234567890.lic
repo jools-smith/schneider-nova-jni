@@ -1,0 +1,8 @@
+INCREMENT survey demo 1.0 31-dec-2025 uncounted \
+	VENDOR_STRING="This is a sample license" START=1-may-2009
+
+INCREMENT metered demo 1.0 31-dec-2025 uncounted \
+	VENDOR_STRING="3" START=1-may-2009 ISSUED=1-may-2009
+
+INCREMENT launches demo 1.0 31-dec-2025 uncounted \
+	VENDOR_STRING="3" START=1-may-2009 ISSUED=1-may-2009

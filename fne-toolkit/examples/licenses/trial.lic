@@ -1,0 +1,7 @@
+INCREMENT survey demo 1.0 31-dec-2025 1 VENDOR_STRING="Saudi Arabia, Lodi California" START=1-may-2009
+INCREMENT highres demo 2.0 31-dec-2025 1 VENDOR_STRING=Global START=1-may-2009
+INCREMENT lowres demo 1.1 31-dec-2025 1 VENDOR_STRING="South America" START=1-may-2009
+INCREMENT download demo 2.0 31-dec-2025 1 VENDOR_STRING=Global START=1-may-2009
+INCREMENT upload demo 2.0 31-dec-2025 1 VENDOR_STRING=Global START=1-may-2009
+INCREMENT special demo 1.0 31-dec-2025 1 VENDOR_STRING=Global START=1-may-2009
+INCREMENT updates demo 1.0 31-dec-2025 1 START=1-may-2009
