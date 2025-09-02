@@ -18,13 +18,12 @@
 #include <string>
 #include <sstream>
 
-extern "C"
-{   
-    bool TestFne(const std::string&licenseFilePath, std::stringstream&output);
+extern "C" {
+extern bool test_fne(const std::string &licenseFilePath, std::stringstream &output);
 
-    bool TestTra(std::stringstream&output);
+extern bool test_tra(std::stringstream &output);
 
-    // TBC
+extern bool quick_test_tra();
 }
 
 #endif /* NOVA_H */

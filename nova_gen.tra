@@ -1,5 +1,8 @@
 --The purpose of file is to declare the details used to generate the script used by the application
 
+
+--The purpose of file is to declare the details used to generate the script used by the application
+
 local code = load_byte_array( "tra_gen" )
 
 local security = load( bytes, 0, code, string.len( code ) )()
@@ -29,22 +32,22 @@ declare.strings.identity_bad = {
 
 declare.strings.feature_name = {
 	"Nova.JNI",
-	["aliases"] = 1,
+	["aliases"] = 3,
 	["actions"] = { ["detect_tamper"] = true }
 }
 declare.strings.feature_version = {
 	"2016.02",
-	["aliases"] = 1,
+	["aliases"] = 3,
 	["actions"] = { ["detect_tamper"] = true }
 }
 declare.strings.feature_name_bad = {
 	"nova.jni.feature",
-	["aliases"] = 1,
+	["aliases"] = 3,
 	["actions"] = { ["detect_tamper"] = true }
 }
 declare.strings.feature_version_bad = {
 	"1.0",
-	["aliases"] = 1,
+	["aliases"] = 3,
 	["actions"] = { ["detect_tamper"] = true }
 }
 
@@ -53,17 +56,25 @@ declare.snif.initialize = {
 	["on_false"] = "do_initialize_fail",
 	["on_true"] = "do_checkout", 
 	["detect_tamper"] = true, 
-	["aliases"] = 1
+	["aliases"] = 2
 }
 
-options.debug = {
-	["trace"] = true,
-	["allow_debugger"] = true,
-	["allow_failure"] = false,
-	["visual_studio"] = true
-	}
+options.one_pass = false
 
-options.header = "Nova Demo � Jools Smith"
+options.debug = {
+    ["stats"] = true, 
+    ["trace"] = true,
+    ["allow_debugger"] = true,
+    ["allow_failure"] = true, 
+    ["visual_studio"] = false, 
+    ["enc_trace"] = false, 
+
+    ["dump_mismatched_sections"] = true
+}
+
+options.header = "Nova Demo (c) 2025 Jools Smith"
+
+options.name = "nova"
 
 options.TDT = { ["typename"] = "TFT" }
 
@@ -71,9 +82,13 @@ options.register = {
 	"do_initialize", 
 	"do_initialize_fail", 
 	"do_checkout"
-	}
+}
 
 
-options.name = "nova"
+options.FNE = {}
+
+
+-- options.report = "report_callback"
 
 return tra_generate( options, declare )
+

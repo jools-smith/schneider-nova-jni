@@ -31,12 +31,12 @@ BASE=$(subst \,/,$(BSE))
 
 CC=gcc
 CXX=g++
-LD=gcc
+LD=gcc -no-pie
 AR=ar
 
 DEBUG_FLAGS=-g
-CFLAGS=-x c -Wstrict-aliasing $(DEBUG_FLAGS)
-CXXFLAGS=-x c++ -Wstrict-aliasing $(DEBUG_FLAGS)
+CFLAGS=-x c -no-pie -Wstrict-aliasing $(DEBUG_FLAGS)
+CXXFLAGS=-x c++ -no-pie -Wstrict-aliasing $(DEBUG_FLAGS)
 LFLAGS=
 LFLAGSTRA=
 DFLAGS=-DHAVE_STDINT -DHAVE_SETENV -DNDEBUG
