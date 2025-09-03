@@ -8,12 +8,30 @@
 #include "FlcLicensing.h"
 #include "FlcLicenseManager.h"
 #include "FlcFeature.h"
-//#include "Nova.IdentityClient.h"
+
 #include "fnedemo.RSA512.IdentityClient.h"
 
 #include <string>
 #include <vector>
 #include <sstream>
+
+class FieldWrapper {
+//	int m_name;
+//	int m_value;
+public:
+    TFT name;
+    TFT value;
+	FieldWrapper(TraWrapper &value) : name(value, TRA_VARIABLE_minus_one_ALIAS_2), value(value, TRA_VARIABLE_minus_one_ALIAS_3) {
+
+	}
+//
+//	int&name() {
+//		return m_name;
+//	}
+//	int&value() {
+//		return m_value;
+//	}
+};
 
 class UserData {
     TraWrapper &m_tra;
@@ -26,7 +44,11 @@ public:
     std::string error;
     std::string path;
 
-    UserData(TraWrapper &value) : m_tra(value), m_error(0), m_licensing(0), m_license(0) {
+    FieldWrapper identity;
+    FieldWrapper message;
+    TFT status;
+
+    UserData(TraWrapper &value) : m_tra(value), m_error(0), m_licensing(0), m_license(0), identity(value), message(value), status(value, TRA_VARIABLE_minus_one_ALIAS_1){
     }
 
     virtual ~UserData();

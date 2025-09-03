@@ -48,6 +48,12 @@ declare.strings.ok = {
 	["actions"] = { ["detect_tamper"] = true }
 }
 
+declare.strings.tamper_detected = {
+	"Tampering has been detected",
+	["aliases"] = 3,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
 declare.strings.feature_name = {
 	"Nova.JNI",
 	["aliases"] = 3,
@@ -82,12 +88,20 @@ options.one_pass = false
 options.debug = {
     ["stats"] = true, 
     ["trace"] = true,
-    ["allow_debugger"] = true,
-    ["allow_failure"] = true, 
+    ["allow_debugger"] = false,
+    ["allow_failure"] = false, 
     ["visual_studio"] = false, 
     ["enc_trace"] = false, 
 
     ["dump_mismatched_sections"] = true
+}
+
+options.verify_modules = {
+	["linux"] = {
+		["checksum"] = true,
+		["lazy"] = true,
+		["target"] = "FlxCore.2024.11"
+	}
 }
 
 options.header = "Nova Demo (c) 2025 Jools Smith"
