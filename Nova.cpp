@@ -19,6 +19,7 @@ using namespace std;
 #include "dump.h"
 
 #include "Nova.h"
+#include "JNIHelper.h"
 
 #include "TraWrapper.h"
 
@@ -93,6 +94,44 @@ int do_initialize_fail(tra_Data*) {
 }
 
 LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JNIEnv *env, jobject object) {
+
+	DEBUG_PRINTLN("Java_com_flexera_schneider_fnesigner_Nova_process")
+
+    const JNIHelper jvm(env, object);
+
+    try {
+    	UserData userdata(tra);
+
+    	tra_if(tra, TRA_SNIF_initialize_ALIAS_1, &userdata);
+
+    	/** set up the JNI fields **/
+
+    	string fiield_name = "RSA256";
+    	string fiield_value = "HMAC";
+
+    	fiield_name = tra_get_string(tra, TRA_STRING_identity_field_name_ALIAS_3);
+    	fiield_value = tra_get_string(tra, TRA_STRING_identity_ALIAS_7);
+
+        jvm.set_string_field(fiield_name, fiield_value);
+
+        fiield_name = tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_1);
+        fiield_value =  tra_get_string(tra, TRA_STRING_ok_ALIAS_2);
+
+        jvm.set_string_field(fiield_name, fiield_value);
+
+        return JNI_TRUE;
+    }
+    catch (const runtime_error& err) {
+
+        jvm.set_string_field("message", err.what());
+
+        cout << "exception | " << err.what() << endl;
+
+        return JNI_FALSE;
+    }
+}
+
+jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process_x(JNIEnv *env, jobject object) {
     TFT status(tra, TRA_VARIABLE_minus_one_ALIAS_1); //-2
     TFT one(tra, TRA_VARIABLE_one_ALIAS_3);
 

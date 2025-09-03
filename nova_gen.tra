@@ -30,6 +30,24 @@ declare.strings.identity_bad = {
 	["actions"] = { ["detect_tamper"] = true }
 }
 
+declare.strings.identity_field_name = {
+	"identity",
+	["aliases"] = 3,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
+declare.strings.message_field_name = {
+	"message",
+	["aliases"] = 3,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
+declare.strings.ok = {
+	"OK",
+	["aliases"] = 3,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
 declare.strings.feature_name = {
 	"Nova.JNI",
 	["aliases"] = 3,
