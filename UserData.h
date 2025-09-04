@@ -13,15 +13,16 @@
 #include <vector>
 #include <sstream>
 
-class FieldWrapper {
-//	int m_name;
-//	int m_value;
+class FieldWrapper final {
+
 public:
     TFT name;
     TFT value;
 	FieldWrapper(TraWrapper &value) : name(value, TRA_VARIABLE_minus_one_ALIAS_2), value(value, TRA_VARIABLE_minus_one_ALIAS_3) {
 
 	}
+
+	~FieldWrapper() = default;
 };
 
 class UserData final {

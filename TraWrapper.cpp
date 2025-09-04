@@ -10,12 +10,12 @@ TraWrapper::~TraWrapper() {
 
 TraWrapper::operator tra_State*() {
     if (!m_tra_state) {
-        DEBUG_PRINTLN("Lazy Load TRA")
+        DEBUG_PRINTLN("load TRA declarative data...")
 
         m_tra_state = tra_load_nova_declarative_data();
-    }
 
-    DEBUG_PRINT("TRA = %p", (void*)m_tra_state)
+        DEBUG_PRINT("TRA = %p", (void*)m_tra_state)
+    }
 
     return m_tra_state;
 }

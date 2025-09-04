@@ -44,33 +44,8 @@ static int gnuc_patch = __GNUC_PATCHLEVEL__;
 
 extern "C" {
 
-
-// TODO - need to include license check at some point
-int do_initialize(tra_Data *p) {
-    DEBUG_PRINTLN("do_initialize");
-
-	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
-
-		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_1;
-		pud->identity.value = TRA_STRING_identity_bad_ALIAS_1;
-		pud->message.name = TRA_STRING_message_field_name_ALIAS_1;
-		pud->message.value = TRA_STRING_tamper_detected_ALIAS_1;
-		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_1);
-
-	    // license check would go here
-	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_12) + TFT(tra, TRA_VARIABLE_one_ALIAS_12);
-	}
-	catch (...) {
-	    DEBUG_PRINTLN("exception");
-	    return -1;
-	}
-}
-
-int do_checkout(tra_Data*const p) {
-    DEBUG_PRINTLN("do_checkout");
-
+int cf_save_jni_field_aliases_good(tra_Data *p) {
+	DEBUG_PRINT("cf_save_jni_field_aliases_good %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
@@ -81,6 +56,72 @@ int do_checkout(tra_Data*const p) {
 		pud->message.value = TRA_STRING_ok_ALIAS_1;
 		pud->status = TFT(tra, TRA_VARIABLE_one_ALIAS_1);
 
+		return 1;
+	}
+	catch (...) {
+	    DEBUG_PRINTLN("exception");
+	    return -1;
+	}
+}
+
+int cf_save_jni_field_aliases_bad(tra_Data *p) {
+	DEBUG_PRINT("cf_save_jni_field_aliases_bad %p", (void*)p);
+	try {
+		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", (void*)pud);
+
+		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_1;
+		pud->identity.value = TRA_STRING_identity_bad_ALIAS_1;
+		pud->message.name = TRA_STRING_message_field_name_ALIAS_1;
+		pud->message.value = TRA_STRING_tamper_detected_ALIAS_1;
+		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_1);
+
+		return 1;
+	}
+	catch (...) {
+	    DEBUG_PRINTLN("exception");
+	    return -1;
+	}
+}
+// TODO - need to include license check at some point
+int do_initialize(tra_Data *p) {
+	DEBUG_PRINT("do_initialize %p", (void*)p);
+
+	try {
+		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", (void*)pud);
+
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_3, TRA_VARIABLE_ax_ALIAS_4, nullptr);
+
+//		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_1;
+//		pud->identity.value = TRA_STRING_identity_bad_ALIAS_1;
+//		pud->message.name = TRA_STRING_message_field_name_ALIAS_1;
+//		pud->message.value = TRA_STRING_tamper_detected_ALIAS_1;
+//		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_1);
+
+	    // license check would go here
+	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_12) + TFT(tra, TRA_VARIABLE_one_ALIAS_12);
+	}
+	catch (...) {
+	    DEBUG_PRINTLN("exception");
+	    return -1;
+	}
+}
+
+int do_initialize_success(tra_Data*const p) {
+	DEBUG_PRINT("do_initialize_success %p", (void*)p);
+	try {
+		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", (void*)pud);
+
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, nullptr);
+
+//		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_2;
+//		pud->identity.value = TRA_STRING_identity_ALIAS_1;
+//		pud->message.name = TRA_STRING_message_field_name_ALIAS_2;
+//		pud->message.value = TRA_STRING_ok_ALIAS_1;
+//		pud->status = TFT(tra, TRA_VARIABLE_one_ALIAS_1);
+
 	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_13) + TFT(tra, TRA_VARIABLE_one_ALIAS_9);
 	}
 	catch (...) {
@@ -90,17 +131,18 @@ int do_checkout(tra_Data*const p) {
 }
 
 int do_initialize_fail(tra_Data*p) {
-    DEBUG_PRINTLN("do_initialize_fail");
-
+	DEBUG_PRINT("do_initialize_fail %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_3;
-		pud->identity.value = TRA_STRING_identity_bad_ALIAS_2;
-		pud->message.name = TRA_STRING_message_field_name_ALIAS_3;
-		pud->message.value = TRA_STRING_tamper_detected_ALIAS_2;
-		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_2);
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_5, TRA_VARIABLE_ax_ALIAS_6, nullptr);
+
+//		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_3;
+//		pud->identity.value = TRA_STRING_identity_bad_ALIAS_2;
+//		pud->message.name = TRA_STRING_message_field_name_ALIAS_3;
+//		pud->message.value = TRA_STRING_tamper_detected_ALIAS_2;
+//		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_2);
 
 	    return  TFT(tra, TRA_VARIABLE_minus_one_ALIAS_13) + TFT(tra, TRA_VARIABLE_one_ALIAS_7);
 	}
@@ -111,8 +153,7 @@ int do_initialize_fail(tra_Data*p) {
 }
 
 int cf_tamper_detected(tra_Data*p) {
-    DEBUG_PRINTLN("cf_tamper_detected");
-
+	DEBUG_PRINT("cf_tamper_detected %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
