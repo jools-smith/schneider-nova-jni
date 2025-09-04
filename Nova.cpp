@@ -38,6 +38,10 @@ static TraWrapper tra;
 static const string datestamp = __DATE__;
 static const string timestamp = __TIME__;
 
+static int gnuc = __GNUC__;
+static int gnuc_minor = __GNUC_MINOR__;
+static int gnuc_patch = __GNUC_PATCHLEVEL__;
+
 extern "C" {
 
 
@@ -131,13 +135,13 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
     	ErrorWrapper error;
 
     	Status status(error);
-    	status["FlcErrorCreate"] = FlcErrorCreate(error);
+    	status << "FlcErrorCreate" << FlcErrorCreate(error);
 
     	LicensingWrapper licensing;
     	status["FlcLicensingCreate"] = FlcLicensingCreate(licensing, identity_data, sizeof identity_data, nullptr, nullptr, error);
 
     	const FlcChar*fneVersion;
-    	status = FlcGetClientVersion(licensing, &fneVersion, error);
+    	status = FlcGetLicensingVersion(licensing, &fneVersion, error);
 
         jvm.set_string_field("fneToolkitVersion", fneVersion);
 
@@ -147,8 +151,10 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
     	char bfr[90];
 
     	strftime(bfr, sizeof bfr, "%Y-%m-%d", &time);
-
         jvm.set_string_field("nativeLibraryVersion", string(bfr) + " " + timestamp);
+
+        snprintf(bfr, sizeof bfr, "%d.%d.%d", gnuc, gnuc_minor, gnuc_patch);
+        jvm.set_string_field("compilerVersion", bfr);
 
 		return JNI_TRUE;
     }
