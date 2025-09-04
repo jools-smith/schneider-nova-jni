@@ -50,11 +50,13 @@ int cf_save_jni_field_aliases_good(tra_Data *p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_2;
-		pud->identity.value = TRA_STRING_identity_ALIAS_1;
-		pud->message.name = TRA_STRING_message_field_name_ALIAS_2;
-		pud->message.value = TRA_STRING_ok_ALIAS_1;
-		pud->status = TFT(tra, TRA_VARIABLE_one_ALIAS_1);
+        pud->set_identity_message_values(
+        		TRA_STRING_identity_field_name_ALIAS_2,
+				TRA_STRING_identity_ALIAS_1,
+				TRA_STRING_message_field_name_ALIAS_2,
+				TRA_STRING_ok_ALIAS_1);
+
+        pud->set_status(TRA_VARIABLE_one_ALIAS_1);
 
 		return 1;
 	}
@@ -70,11 +72,13 @@ int cf_save_jni_field_aliases_bad(tra_Data *p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_1;
-		pud->identity.value = TRA_STRING_identity_bad_ALIAS_1;
-		pud->message.name = TRA_STRING_message_field_name_ALIAS_1;
-		pud->message.value = TRA_STRING_tamper_detected_ALIAS_1;
-		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_1);
+        pud->set_identity_message_values(
+        		TRA_STRING_identity_field_name_ALIAS_1,
+				TRA_STRING_identity_bad_ALIAS_1,
+				TRA_STRING_message_field_name_ALIAS_1,
+				TRA_STRING_tamper_detected_ALIAS_1);
+
+        pud->set_status(TRA_VARIABLE_zero_ALIAS_1);
 
 		return 1;
 	}
@@ -83,7 +87,7 @@ int cf_save_jni_field_aliases_bad(tra_Data *p) {
 	    return -1;
 	}
 }
-// TODO - need to include license check at some point
+
 int do_initialize(tra_Data *p) {
 	DEBUG_PRINT("do_initialize %p", (void*)p);
 
@@ -91,13 +95,7 @@ int do_initialize(tra_Data *p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_3, TRA_VARIABLE_ax_ALIAS_4, nullptr);
-
-//		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_1;
-//		pud->identity.value = TRA_STRING_identity_bad_ALIAS_1;
-//		pud->message.name = TRA_STRING_message_field_name_ALIAS_1;
-//		pud->message.value = TRA_STRING_tamper_detected_ALIAS_1;
-//		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_1);
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_3, TRA_VARIABLE_ax_ALIAS_4, pud->get_reply_address());
 
 	    // license check would go here
 	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_12) + TFT(tra, TRA_VARIABLE_one_ALIAS_12);
@@ -114,13 +112,7 @@ int do_initialize_success(tra_Data*const p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, nullptr);
-
-//		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_2;
-//		pud->identity.value = TRA_STRING_identity_ALIAS_1;
-//		pud->message.name = TRA_STRING_message_field_name_ALIAS_2;
-//		pud->message.value = TRA_STRING_ok_ALIAS_1;
-//		pud->status = TFT(tra, TRA_VARIABLE_one_ALIAS_1);
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, pud->get_reply_address());
 
 	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_13) + TFT(tra, TRA_VARIABLE_one_ALIAS_9);
 	}
@@ -136,13 +128,7 @@ int do_initialize_fail(tra_Data*p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_5, TRA_VARIABLE_ax_ALIAS_6, nullptr);
-
-//		pud->identity.name = TRA_STRING_identity_field_name_ALIAS_3;
-//		pud->identity.value = TRA_STRING_identity_bad_ALIAS_2;
-//		pud->message.name = TRA_STRING_message_field_name_ALIAS_3;
-//		pud->message.value = TRA_STRING_tamper_detected_ALIAS_2;
-//		pud->status = TFT(tra, TRA_VARIABLE_zero_ALIAS_2);
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_5, TRA_VARIABLE_ax_ALIAS_6, pud->get_reply_address());
 
 	    return  TFT(tra, TRA_VARIABLE_minus_one_ALIAS_13) + TFT(tra, TRA_VARIABLE_one_ALIAS_7);
 	}
@@ -225,17 +211,13 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JN
 
     	/** set up the JNI fields **/
 
-        jvm.set_string_field(
-        		tra_get_string(tra, userdata.identity.name),
-				tra_get_string(tra, userdata.identity.value));
+        jvm.set_string_field(userdata.get_identity_name(),userdata.get_identity_value());
 
-        tra_release_string(tra, userdata.identity.value);
+        jvm.set_string_field(userdata.get_message_name(),userdata.get_message_value());
 
-        jvm.set_string_field(
-        		tra_get_string(tra, userdata.message.name),
-				tra_get_string(tra, userdata.message.value));
+        userdata.release_all_strings();
 
-        return TFT(tra, TRA_VARIABLE_zero_ALIAS_1) + userdata.status;
+        return TFT(tra, TRA_VARIABLE_zero_ALIAS_1) + userdata.get_status();
     }
     catch (const runtime_error& err) {
 
