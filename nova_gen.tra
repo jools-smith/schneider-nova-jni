@@ -108,19 +108,54 @@ options.header = "Nova Demo (c) 2025 Jools Smith"
 
 options.name = "nova"
 
+
+
 options.TDT = { ["typename"] = "TFT" }
+
+-- LUA functions
+
+local function logvalue(func, value) 
+	tra.log("[" .. func .. " | " .. value .. "\n")
+end
+
+local function loggit(func, alias_1, alias_2, user_data)
+	tra.log("[" .. func .. " | " )
+	tra.log(tostring(alias_1) .. " | " )
+	tra.log(tostring(alias_2) .. " | " )
+	tra.log(tostring(user_data) .. "an" )
+end
+
+function l_obf_get_library_version(alias_1, alias_2, user_data) 
+	local func = "l_obf_get_library_version"
+	
+	loggit(func, alias_1, alias_2, user_data)
+	
+	logvalue(func, "out");
+	
+	return 12345;
+end
+
+-- LUA functions
 
 options.register = {	
 	"do_initialize", 
 	"do_initialize_fail", 
-	"do_checkout"
+	"do_checkout",
+	"cf_tamper_detected"
 }
 
+options.callhome = "cf_tamper_detected"
+
+-- options.report = "report_callback"
+
+declare.tra_functions.GET_LIBRARY_VERSION = { "l_obf_get_library_version",
+	["aliases"] = 3,
+	["actions"] = { ["detect_tamper"] = true }
+}
 
 options.FNE = {}
 
 
--- options.report = "report_callback"
 
 return tra_generate( options, declare )
 
