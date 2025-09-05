@@ -19,6 +19,7 @@ using namespace std;
 
 #include "dump.h"
 #include "FneHelpers.h"
+#include "Status.h"
 #include "Nova.h"
 #include "JNIHelper.h"
 #include "IdentityClient.h"
@@ -207,14 +208,86 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize
         tra_call(tra, TRA_FUNCTION_SHOW_ALIASES_ALIAS_1, &userdata, TRA_VARIABLE_ax_ALIAS_60, TRA_VARIABLE_ax_ALIAS_61, reply);
 		return JNI_TRUE;
     }
-    catch (const runtime_error& err) {
-
-        jvm.set_string_field("message", err.what());
+    catch (runtime_error&  err) {
 
         cout << "exception | " << err.what() << endl;
 
+        jvm.set_string_field("message", err.what());
+
+
         return JNI_FALSE;
     }
+    catch (...) {
+
+        jvm.set_string_field("message", "exception");
+
+        return JNI_FALSE;
+    }
+}
+
+static const char* get_host_id_type(const FlcHostIdType type) {
+	switch (type) {
+	case FLC_HOSTID_TYPE_UNKNOWN:
+		return "Unknown";
+	case FLC_HOSTID_TYPE_UNSUPPORTED:
+		return "Unsupported";
+	case FLC_HOSTID_TYPE_LONGHOSTID:
+		return "Long";
+	case FLC_HOSTID_TYPE_ETHERNET:
+		return "Ethernet";
+	case FLC_HOSTID_TYPE_ANY:
+		return "Any";
+	case FLC_HOSTID_TYPE_USER:
+		return "User";
+	case FLC_HOSTID_TYPE_DISPLAY:
+		return "Display";
+	case FLC_HOSTID_TYPE_HOSTNAME:
+		return "Host Name";
+	case FLC_HOSTID_TYPE_STRING:
+		return "String";
+	case FLC_HOSTID_TYPE_FLEXID7:
+		return "FlexID 7";
+	case FLC_HOSTID_TYPE_VSN:
+		return " Volume Serial Number";
+	case FLC_HOSTID_TYPE_INTERNET:
+		return "Internet";
+	case FLC_HOSTID_TYPE_INTERNET6:
+		return "Internet IPV6";
+	case FLC_HOSTID_TYPE_FLEXID8:
+		return "FlexID 8";
+	case FLC_HOSTID_TYPE_FLEXID9:
+		return "FlexID 9";
+	case FLC_HOSTID_TYPE_HOSTDOMAIN:
+		return "Host Domain";
+	case FLC_HOSTID_TYPE_FLEXID6:
+		return "FlexID 6";
+	case FLC_HOSTID_TYPE_COMPOSITE:
+		return "Composite";
+	case FLC_HOSTID_TYPE_VENDOR:
+		return "Vendor Defined";
+	case FLC_HOSTID_TYPE_FLEXID10:
+		return "FlexID 10";
+	case FLC_HOSTID_TYPE_VM_UUID:
+		return "VM UUID";
+	case FLC_HOSTID_TYPE_AMAZON_EIP:
+		return "Amazon EIP";
+	case FLC_HOSTID_TYPE_AMAZON_AMI:
+		return "Amazon AMI ";
+	case FLC_HOSTID_TYPE_TOLERANT:
+		return "Tolerant";
+	case FLC_HOSTID_TYPE_AMAZON_IID:
+		return "Amazon IID";
+	case FLC_HOSTID_TYPE_EXTENDED:
+		return "Extended";
+	case FLC_HOSTID_TYPE_PUBLISHER_DEFINED:
+		return "Publisher Defined";
+	case FLC_HOSTID_TYPE_CONTAINER_ID:
+		return "Docker container ID ";
+	case FLC_HOSTID_NEXT:
+		return "Next";
+	default:
+		return "????";
+	}
 }
 
 LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JNIEnv *env, jobject object) {
@@ -232,8 +305,31 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
     	LicensingWrapper licensing;
     	status["FlcLicensingCreate"] = FlcLicensingCreate(licensing, identity_data, sizeof identity_data, nullptr, nullptr, error);
 
+    	status["FlcSetVmDetectionEnabled"] =  FlcSetVmDetectionEnabled(licensing, FLC_TRUE, error);
+
     	const FlcChar*fneVersion;
-    	status = FlcGetLicensingVersion(licensing, &fneVersion, error);
+    	status["FlcGetLicensingVersion"] = FlcGetLicensingVersion(licensing, &fneVersion, error);
+
+    	const FlcChar*fneClientVersion;
+    	status["FlcGetLicensingVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
+
+    	// get host IDs
+    	HostIdsWrapper hostids;
+    	status["FlcGetHostIds"] = FlcGetHostIds(licensing, hostids, error);
+
+    	FlcUInt32 size;
+    	status["FlcHostIdsGetIdCount"] = FlcHostIdsGetIdCount(hostids, &size, error);
+
+    	for (FlcUInt32 i = 0; i < size; i++) {
+    		FlcInt32 type;
+    		const FlcChar* value;
+    		status["FlcHostIdsGetId"] =  FlcHostIdsGetId(hostids, i, &type, &value, error);
+
+            DEBUG_PRINT("%2.2d | %s | %s", type, get_host_id_type(static_cast<FlcHostIdType>(type)), value);
+    	}
+
+    	//TODO:
+    	status["force fail"] = FLC_FALSE;
 
         jvm.set_string_field("fneToolkitVersion", fneVersion);
 
@@ -250,11 +346,18 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
 
 		return JNI_TRUE;
     }
-    catch (const runtime_error& err) {
+    catch (runtime_error&  err) {
+
+        cout << "exception | " << err.what() << endl;
 
         jvm.set_string_field("message", err.what());
 
-        cout << "exception | " << err.what() << endl;
+
+        return JNI_FALSE;
+    }
+    catch (...) {
+
+        jvm.set_string_field("message", "exception");
 
         return JNI_FALSE;
     }
@@ -284,11 +387,18 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JN
 
         return TFT(tra, TRA_VARIABLE_zero_ALIAS_1) + userdata.get_status();
     }
-    catch (const runtime_error& err) {
+    catch (runtime_error&  err) {
+
+        cout << "exception | " << err.what() << endl;
 
         jvm.set_string_field("message", err.what());
 
-        cout << "exception | " << err.what() << endl;
+
+        return JNI_FALSE;
+    }
+    catch (...) {
+
+        jvm.set_string_field("message", "exception");
 
         return JNI_FALSE;
     }

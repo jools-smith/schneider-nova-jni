@@ -1,0 +1,87 @@
+-- LUA functions
+
+local prefix = "***FNE-Signer*** "
+
+local function logvalue(func, value) 
+	tra.log(prefix .. "["..func.."] "..value)
+end
+
+local function loggit(func, alias_1, alias_2, user_data)
+	tra.log(prefix .. "[".. func.."] " .. tostring(alias_1) .. " | " .. tostring(alias_2) .. " | " .. tostring(user_data));
+end
+
+
+function l_obf_save_field_aliases_good(alias_1, alias_2, user_data) 
+	loggit("l_obf_save_field_aliases_good", alias_1, alias_2, user_data)
+	
+	return cf_save_jni_field_aliases_good();
+end
+
+function l_obf_save_field_aliases_bad(alias_1, alias_2, user_data) 
+	loggit("l_obf_save_field_aliases_bad", alias_1, alias_2, user_data)
+	
+	return cf_save_jni_field_aliases_bad();
+end
+
+local aliases = {}
+
+local function get_table_count(tab)
+    count = 0
+    for key,value in pairs(tab) do
+        count = count + 1
+    end
+    
+    return count
+end  
+
+
+function l_obf_aliases_clear(alias_1, alias_2, user_data) 
+	
+	loggit("l_obf_aliases_clear", alias_1, alias_2, user_data)
+	
+	aliases = {}
+	
+	return get_table_count(aliases)
+	
+end
+
+function l_obf_add_alias_to_set(alias, dummy, user_data) 
+	
+	loggit("l_obf_add_alias_to_set", alias, dummy, user_data)
+	
+	key = tra.get_string(alias)
+	
+	if aliases[key] == nil then
+		aliases[key] = {}
+	end
+	
+	table.insert(aliases[key], alias)
+	
+	return get_table_count(aliases[key])
+end
+
+function l_obf_get_alias_from_set(alias, dummy, user_data) 
+
+	loggit("l_obf_get_alias_from_set", alias, dummy, user_data)
+	
+	key = tra.get_string(alias)
+	
+	offset = math.random(1, get_table_count(aliases[key]))
+	
+	value = aliases[key][offset]
+	
+	tra.log(prefix .. key .. " | " .. offset .. " | " .. value);
+	
+	return value
+end
+
+function l_obf_show_aliases(dummy_1, dummy2, user_data) 
+
+	loggit("l_obf_show_aliases", alias, dummy, user_data)
+	
+	tra.log(prefix .. dump(aliases))
+	
+	return 0
+end
+
+-- LUA functions
