@@ -50,11 +50,19 @@ int cf_save_jni_field_aliases_good(tra_Data *p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-        pud->set_identity_message_values(
-        		TRA_STRING_identity_field_name_ALIAS_2,
-				TRA_STRING_identity_ALIAS_1,
-				TRA_STRING_message_field_name_ALIAS_2,
-				TRA_STRING_ok_ALIAS_1);
+        IdentityMessagePayload payload;
+
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_1, pud, TRA_STRING_identity_field_name_ALIAS_5, TRA_VARIABLE_ax_ALIAS_97, &payload.identity_name);
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_2, pud, TRA_STRING_identity_ALIAS_5, TRA_VARIABLE_ax_ALIAS_96, &payload.identity_value);
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_3, pud, TRA_STRING_message_field_name_ALIAS_5, TRA_VARIABLE_ax_ALIAS_95, &payload.message_name);
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_4, pud, TRA_STRING_ok_ALIAS_5, TRA_VARIABLE_ax_ALIAS_94, &payload.message_value);
+
+        pud->set_identity_message_values(payload);
+
+//        		(TRA_STRING_INDEX)identity_name,
+//				(TRA_STRING_INDEX)identity_value,
+//				(TRA_STRING_INDEX)message_name,
+//				(TRA_STRING_INDEX)message_value);
 
         pud->set_status(TRA_VARIABLE_one_ALIAS_1);
 
@@ -72,11 +80,14 @@ int cf_save_jni_field_aliases_bad(tra_Data *p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-        pud->set_identity_message_values(
-        		TRA_STRING_identity_field_name_ALIAS_1,
-				TRA_STRING_identity_bad_ALIAS_1,
-				TRA_STRING_message_field_name_ALIAS_1,
-				TRA_STRING_tamper_detected_ALIAS_1);
+        IdentityMessagePayload payload;
+
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_5, pud, TRA_STRING_identity_field_name_ALIAS_4, TRA_VARIABLE_ax_ALIAS_87, &payload.identity_name);
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_6, pud, TRA_STRING_identity_bad_ALIAS_4, TRA_VARIABLE_ax_ALIAS_86, &payload.identity_value);
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_7, pud, TRA_STRING_message_field_name_ALIAS_4, TRA_VARIABLE_ax_ALIAS_85, &payload.message_name);
+        tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_8, pud, TRA_STRING_tamper_detected_ALIAS_4, TRA_VARIABLE_ax_ALIAS_84, &payload.message_value);
+
+        pud->set_identity_message_values(payload);
 
         pud->set_status(TRA_VARIABLE_zero_ALIAS_1);
 
@@ -95,10 +106,11 @@ int do_initialize(tra_Data *p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
+        // invoke cf_save_jni_field_aliases_bad */
         tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_3, TRA_VARIABLE_ax_ALIAS_4, pud->get_reply_address());
 
 	    // license check would go here
-	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_12) + TFT(tra, TRA_VARIABLE_one_ALIAS_12);
+	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_5) + TFT(tra, TRA_VARIABLE_one_ALIAS_5);
 	}
 	catch (...) {
 	    DEBUG_PRINTLN("exception");
@@ -112,9 +124,10 @@ int do_initialize_success(tra_Data*const p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
+        // invoke cf_save_jni_field_aliases_success */
         tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, pud->get_reply_address());
 
-	    return  TFT(tra, TRA_VARIABLE_zero_ALIAS_13) + TFT(tra, TRA_VARIABLE_one_ALIAS_9);
+	    return TFT(tra, TRA_VARIABLE_zero_ALIAS_4) + TFT(tra, TRA_VARIABLE_one_ALIAS_4);
 	}
 	catch (...) {
 	    DEBUG_PRINTLN("exception");
@@ -128,9 +141,9 @@ int do_initialize_fail(tra_Data*p) {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", (void*)pud);
 
-        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_5, TRA_VARIABLE_ax_ALIAS_6, pud->get_reply_address());
+        tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_2, pud, TRA_VARIABLE_ax_ALIAS_5, TRA_VARIABLE_ax_ALIAS_6, pud->get_reply_address());
 
-	    return  TFT(tra, TRA_VARIABLE_minus_one_ALIAS_13) + TFT(tra, TRA_VARIABLE_one_ALIAS_7);
+	    return TFT(tra, TRA_VARIABLE_minus_one_ALIAS_3) + TFT(tra, TRA_VARIABLE_one_ALIAS_3);
 	}
 	catch (...) {
 	    DEBUG_PRINTLN("exception");
@@ -150,6 +163,58 @@ int cf_tamper_detected(tra_Data*p) {
 	    DEBUG_PRINTLN("exception");
 	    return -1;
 	}
+}
+
+
+LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize(JNIEnv *env, jobject object) {
+
+	DEBUG_PRINTLN("Java_com_flexera_schneider_fnesigner_Nova_initialize")
+
+    const JNIHelper jvm(env, object);
+
+    try {
+    	UserData userdata(tra);
+        DEBUG_PRINT("user data %p", (void*)&userdata);
+
+        auto reply = userdata.get_reply_address();
+
+        tra_call(tra, TRA_FUNCTION_CLEAR_ALIASES_ALIAS_1, &userdata, TRA_VARIABLE_ax_ALIAS_99, TRA_VARIABLE_ax_ALIAS_98, reply);
+
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_1, &userdata, TRA_STRING_identity_field_name_ALIAS_1, TRA_VARIABLE_ax_ALIAS_1, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_2, &userdata, TRA_STRING_identity_field_name_ALIAS_2, TRA_VARIABLE_ax_ALIAS_2, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_3, &userdata, TRA_STRING_identity_field_name_ALIAS_3, TRA_VARIABLE_ax_ALIAS_3, reply);
+
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_11, &userdata, TRA_STRING_identity_ALIAS_1, TRA_VARIABLE_ax_ALIAS_11, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_12, &userdata, TRA_STRING_identity_ALIAS_2, TRA_VARIABLE_ax_ALIAS_12, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_13, &userdata, TRA_STRING_identity_ALIAS_3, TRA_VARIABLE_ax_ALIAS_13, reply);
+
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_21, &userdata, TRA_STRING_identity_bad_ALIAS_1, TRA_VARIABLE_ax_ALIAS_21, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_22, &userdata, TRA_STRING_identity_bad_ALIAS_2, TRA_VARIABLE_ax_ALIAS_22, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_23, &userdata, TRA_STRING_identity_bad_ALIAS_3, TRA_VARIABLE_ax_ALIAS_23, reply);
+
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_31, &userdata, TRA_STRING_message_field_name_ALIAS_1, TRA_VARIABLE_ax_ALIAS_31, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_32, &userdata, TRA_STRING_message_field_name_ALIAS_2, TRA_VARIABLE_ax_ALIAS_32, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_33, &userdata, TRA_STRING_message_field_name_ALIAS_3, TRA_VARIABLE_ax_ALIAS_33, reply);
+
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_41, &userdata, TRA_STRING_ok_ALIAS_1, TRA_VARIABLE_ax_ALIAS_41, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_42, &userdata, TRA_STRING_ok_ALIAS_2, TRA_VARIABLE_ax_ALIAS_42, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_43, &userdata, TRA_STRING_ok_ALIAS_3, TRA_VARIABLE_ax_ALIAS_43, reply);
+
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_51, &userdata, TRA_STRING_tamper_detected_ALIAS_1, TRA_VARIABLE_ax_ALIAS_51, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_52, &userdata, TRA_STRING_tamper_detected_ALIAS_2, TRA_VARIABLE_ax_ALIAS_52, reply);
+        tra_call(tra, TRA_FUNCTION_ADD_ALIAS_TO_SET_ALIAS_53, &userdata, TRA_STRING_tamper_detected_ALIAS_3, TRA_VARIABLE_ax_ALIAS_53, reply);
+
+        tra_call(tra, TRA_FUNCTION_SHOW_ALIASES_ALIAS_1, &userdata, TRA_VARIABLE_ax_ALIAS_60, TRA_VARIABLE_ax_ALIAS_61, reply);
+		return JNI_TRUE;
+    }
+    catch (const runtime_error& err) {
+
+        jvm.set_string_field("message", err.what());
+
+        cout << "exception | " << err.what() << endl;
+
+        return JNI_FALSE;
+    }
 }
 
 LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JNIEnv *env, jobject object) {
