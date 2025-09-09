@@ -24,7 +24,6 @@ using namespace std;
 #include "JNIHelper.h"
 #include "IdentityClient.h"
 #include "TraWrapper.h"
-
 #include "UserData.h"
 
 #include "jni.h"
@@ -59,11 +58,6 @@ int cf_save_jni_field_aliases_good(tra_Data *p) {
         tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_4, pud, TRA_STRING_ok_ALIAS_5, TRA_VARIABLE_ax_ALIAS_94, &payload.message_value);
 
         pud->set_identity_message_values(payload);
-
-//        		(TRA_STRING_INDEX)identity_name,
-//				(TRA_STRING_INDEX)identity_value,
-//				(TRA_STRING_INDEX)message_name,
-//				(TRA_STRING_INDEX)message_value);
 
         pud->set_status(TRA_VARIABLE_one_ALIAS_1);
 
@@ -214,7 +208,6 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize
 
         jvm.set_string_field("message", err.what());
 
-
         return JNI_FALSE;
     }
     catch (...) {
@@ -225,70 +218,7 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize
     }
 }
 
-static const char* get_host_id_type(const FlcHostIdType type) {
-	switch (type) {
-	case FLC_HOSTID_TYPE_UNKNOWN:
-		return "Unknown";
-	case FLC_HOSTID_TYPE_UNSUPPORTED:
-		return "Unsupported";
-	case FLC_HOSTID_TYPE_LONGHOSTID:
-		return "Long";
-	case FLC_HOSTID_TYPE_ETHERNET:
-		return "Ethernet";
-	case FLC_HOSTID_TYPE_ANY:
-		return "Any";
-	case FLC_HOSTID_TYPE_USER:
-		return "User";
-	case FLC_HOSTID_TYPE_DISPLAY:
-		return "Display";
-	case FLC_HOSTID_TYPE_HOSTNAME:
-		return "Host Name";
-	case FLC_HOSTID_TYPE_STRING:
-		return "String";
-	case FLC_HOSTID_TYPE_FLEXID7:
-		return "FlexID 7";
-	case FLC_HOSTID_TYPE_VSN:
-		return " Volume Serial Number";
-	case FLC_HOSTID_TYPE_INTERNET:
-		return "Internet";
-	case FLC_HOSTID_TYPE_INTERNET6:
-		return "Internet IPV6";
-	case FLC_HOSTID_TYPE_FLEXID8:
-		return "FlexID 8";
-	case FLC_HOSTID_TYPE_FLEXID9:
-		return "FlexID 9";
-	case FLC_HOSTID_TYPE_HOSTDOMAIN:
-		return "Host Domain";
-	case FLC_HOSTID_TYPE_FLEXID6:
-		return "FlexID 6";
-	case FLC_HOSTID_TYPE_COMPOSITE:
-		return "Composite";
-	case FLC_HOSTID_TYPE_VENDOR:
-		return "Vendor Defined";
-	case FLC_HOSTID_TYPE_FLEXID10:
-		return "FlexID 10";
-	case FLC_HOSTID_TYPE_VM_UUID:
-		return "VM UUID";
-	case FLC_HOSTID_TYPE_AMAZON_EIP:
-		return "Amazon EIP";
-	case FLC_HOSTID_TYPE_AMAZON_AMI:
-		return "Amazon AMI ";
-	case FLC_HOSTID_TYPE_TOLERANT:
-		return "Tolerant";
-	case FLC_HOSTID_TYPE_AMAZON_IID:
-		return "Amazon IID";
-	case FLC_HOSTID_TYPE_EXTENDED:
-		return "Extended";
-	case FLC_HOSTID_TYPE_PUBLISHER_DEFINED:
-		return "Publisher Defined";
-	case FLC_HOSTID_TYPE_CONTAINER_ID:
-		return "Docker container ID ";
-	case FLC_HOSTID_NEXT:
-		return "Next";
-	default:
-		return "????";
-	}
-}
+
 
 LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JNIEnv *env, jobject object) {
 
@@ -325,11 +255,11 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
     		const FlcChar* value;
     		status["FlcHostIdsGetId"] =  FlcHostIdsGetId(hostids, i, &type, &value, error);
 
-            DEBUG_PRINT("%2.2d | %s | %s", type, get_host_id_type(static_cast<FlcHostIdType>(type)), value);
+            DEBUG_PRINT("%2.2d | %s | %s", type, FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)), value);
     	}
 
     	//TODO:
-    	status["force fail"] = FLC_FALSE;
+//    	status["force fail"] = FLC_FALSE;
 
         jvm.set_string_field("fneToolkitVersion", fneVersion);
 
@@ -351,7 +281,6 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
         cout << "exception | " << err.what() << endl;
 
         jvm.set_string_field("message", err.what());
-
 
         return JNI_FALSE;
     }

@@ -39,28 +39,9 @@ public:
 };
 
 
-//template<typename T> class FneLicensingBase  {
-//protected:
-//	FlcErrorRef& error;
-//
-//    T* object;
-//
-//    explicit FneLicensingBase(FlcErrorRef&err) : error(err), object(nullptr) {
-//    }
-//public:
-//
-//    virtual ~FneLicensingBase() = default;
-//
-//    // reference
-//    operator T*& () {
-//        return object;
-//    }
-//
-//    // pointer to reference
-//     operator T** () {
-//        return &object;
-//    }
-//};
+struct FneUtils {
+	static const char* get_host_id_type(const FlcHostIdType type);
+};
 
 class ErrorWrapper final : public FneWrapperBase<struct flcError> {
 public:
