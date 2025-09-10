@@ -35,16 +35,24 @@ using namespace std;
 
 static TraWrapper tra;
 
-static const string datestamp = __DATE__;
-static const string timestamp = __TIME__;
+/**
+ * wrap time-stamps and compiler versions
+ */
+struct Stamps {
+	const string datestamp;
+	const string timestamp;
 
-static int gnuc = __GNUC__;
-static int gnuc_minor = __GNUC_MINOR__;
-static int gnuc_patch = __GNUC_PATCHLEVEL__;
+	const int gnuc;
+	const int gnuc_minor;
+	const int gnuc_patch;
 
-extern "C" {
+	Stamps() : datestamp(__DATE__), timestamp(__TIME__), gnuc(__GNUC__), gnuc_minor(__GNUC_MINOR__), gnuc_patch(__GNUC_PATCHLEVEL__) {
 
-int cf_save_jni_field_aliases_good(tra_Data *p) {
+	}
+
+};
+
+extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
 	DEBUG_PRINT("cf_save_jni_field_aliases_good %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
@@ -69,7 +77,7 @@ int cf_save_jni_field_aliases_good(tra_Data *p) {
 	}
 }
 
-int cf_save_jni_field_aliases_bad(tra_Data *p) {
+extern "C" int cf_save_jni_field_aliases_bad(tra_Data *const p) {
 	DEBUG_PRINT("cf_save_jni_field_aliases_bad %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
@@ -94,7 +102,7 @@ int cf_save_jni_field_aliases_bad(tra_Data *p) {
 	}
 }
 
-int do_initialize(tra_Data *p) {
+extern "C" int do_initialize(tra_Data *const p) {
 	DEBUG_PRINT("do_initialize %p", (void*)p);
 
 	try {
@@ -113,7 +121,7 @@ int do_initialize(tra_Data *p) {
 	}
 }
 
-int do_initialize_success(tra_Data*const p) {
+extern "C" int do_initialize_success(tra_Data*const p) {
 	DEBUG_PRINT("do_initialize_success %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
@@ -130,7 +138,7 @@ int do_initialize_success(tra_Data*const p) {
 	}
 }
 
-int do_initialize_fail(tra_Data*p) {
+extern "C" int do_initialize_fail(tra_Data*const p) {
 	DEBUG_PRINT("do_initialize_fail %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
@@ -146,7 +154,7 @@ int do_initialize_fail(tra_Data*p) {
 	}
 }
 
-int cf_tamper_detected(tra_Data*p) {
+extern "C" int cf_tamper_detected(tra_Data*const p) {
 	DEBUG_PRINT("cf_tamper_detected %p", (void*)p);
 	try {
 		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
@@ -160,8 +168,7 @@ int cf_tamper_detected(tra_Data*p) {
 	}
 }
 
-
-LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize(JNIEnv *env, jobject object) {
+extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize(JNIEnv *env, jobject object) {
 
 	DEBUG_PRINTLN("Java_com_flexera_schneider_fnesigner_Nova_initialize")
 
@@ -218,9 +225,7 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_initialize
     }
 }
 
-
-
-LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JNIEnv *env, jobject object) {
+extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JNIEnv *env, jobject object) {
 
 	DEBUG_PRINTLN("Java_com_flexera_schneider_fnesigner_Nova_version")
 
@@ -228,6 +233,8 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
 
     try {
     	ErrorWrapper error;
+
+    	const Stamps stamps;
 
     	Status status(error);
     	status << "FlcErrorCreate" << FlcErrorCreate(error);
@@ -264,15 +271,18 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
         jvm.set_string_field("fneToolkitVersion", fneVersion);
 
     	struct tm time;
-    	strptime(datestamp.c_str(), "%b %e %Y", &time);
+    	strptime(stamps.datestamp.c_str(), "%b %e %Y", &time);
 
     	char bfr[90];
 
     	strftime(bfr, sizeof bfr, "%Y-%m-%d", &time);
-        jvm.set_string_field("nativeLibraryVersion", string(bfr) + " " + timestamp);
+        jvm.set_string_field("nativeLibraryVersion", string(bfr) + " " + stamps.timestamp);
 
-        snprintf(bfr, sizeof bfr, "%d.%d.%d", gnuc, gnuc_minor, gnuc_patch);
+        snprintf(bfr, sizeof bfr, "%d.%d.%d", stamps.gnuc, stamps.gnuc_minor, stamps.gnuc_patch);
         jvm.set_string_field("compilerVersion", bfr);
+
+        snprintf(bfr, sizeof bfr, "%s.%s.%s.%s", TRA_VERSION_MAJOR, TRA_VERSION_MINOR, TRA_VERSION_MAINT, TRA_VERSION_BUILD);
+        jvm.set_string_field("traVersion", bfr);
 
 		return JNI_TRUE;
     }
@@ -292,8 +302,7 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_version(JN
     }
 }
 
-
-LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JNIEnv *env, jobject object) {
+extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JNIEnv *env, jobject object) {
 
 	DEBUG_PRINTLN("Java_com_flexera_schneider_fnesigner_Nova_process")
 
@@ -322,7 +331,6 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JN
 
         jvm.set_string_field("message", err.what());
 
-
         return JNI_FALSE;
     }
     catch (...) {
@@ -333,5 +341,3 @@ LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova_process(JN
     }
 }
 
-}
-/* extern c */

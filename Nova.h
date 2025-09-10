@@ -15,15 +15,22 @@
 #ifndef NOVA_H
 #define NOVA_H
 
-#include <string>
-#include <sstream>
+#include "tra.h"
 
 extern "C" {
-extern bool test_fne(const std::string &licenseFilePath, std::stringstream &output);
 
-extern bool test_tra(std::stringstream &output);
+	int cf_save_jni_field_aliases_good(tra_Data *const p);
 
-extern bool quick_test_tra();
+	int cf_save_jni_field_aliases_bad(tra_Data *const p);
+
+	int cf_tamper_detected(tra_Data*const p);
+
+	int do_initialize(tra_Data *const p);
+
+	int do_initialize_success(tra_Data*const p);
+
+	int do_initialize_fail(tra_Data*const p);
+
 }
 
 #endif /* NOVA_H */
