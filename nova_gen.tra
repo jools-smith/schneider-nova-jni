@@ -41,7 +41,13 @@ declare.strings.identity_field_name = {
 
 declare.strings.message_field_name = {
 	"message",
-	["aliases"] = 5,
+	["aliases"] = 20,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
+declare.strings.exception = {
+	"exception",
+	["aliases"] = 20,
 	["actions"] = { ["detect_tamper"] = true }
 }
 
@@ -57,6 +63,30 @@ declare.strings.tamper_detected = {
 	["actions"] = { ["detect_tamper"] = true }
 }
 
+declare.strings.tra_version = {
+	"traVersion",
+	["aliases"] = 5,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
+declare.strings.fne_toolkit_version = {
+	"fneToolkitVersion",
+	["aliases"] = 5,
+	["actions"] = { ["detect_tamper"] = true }
+}
+
+declare.strings.compiler_version = {
+	"compilerVersion",
+	["aliases"] = 5,
+	["actions"] = { ["detect_tamper"] = true }
+}
+    
+declare.strings.native_library_version = {
+	"nativeLibraryVersion",
+	["aliases"] = 5,
+	["actions"] = { ["detect_tamper"] = true }
+}
+  
 declare.snif.initialize = { 
 	["predicate"] = "do_initialize",
 	["on_false"] = "do_initialize_fail",

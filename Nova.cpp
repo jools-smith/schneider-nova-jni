@@ -38,18 +38,43 @@ static TraWrapper tra;
 /**
  * wrap time-stamps and compiler versions
  */
-struct Stamps {
+class Stamps {
 	const string datestamp;
 	const string timestamp;
 
 	const int gnuc;
 	const int gnuc_minor;
 	const int gnuc_patch;
-
+public:
 	Stamps() : datestamp(__DATE__), timestamp(__TIME__), gnuc(__GNUC__), gnuc_minor(__GNUC_MINOR__), gnuc_patch(__GNUC_PATCHLEVEL__) {
 
 	}
 
+	std::string get_timestamp() const {
+    	char bfr[64];
+		struct tm time;
+
+		strptime(datestamp.c_str(), "%b %e %Y", &time);
+
+		strftime(bfr, sizeof bfr, "%Y-%m-%d", &time);
+		return string(bfr) + " " + timestamp;
+	}
+
+	std::string get_gnu_version() const {
+		char bfr[64];
+
+        snprintf(bfr, sizeof bfr, "%d.%d.%d", gnuc, gnuc_minor, gnuc_patch);
+
+		return bfr;
+	}
+
+	std::string get_tra_version() const {
+    	char bfr[64];
+
+        snprintf(bfr, sizeof bfr, "%s.%s.%s.%s", TRA_VERSION_MAJOR, TRA_VERSION_MINOR, TRA_VERSION_MAINT, TRA_VERSION_BUILD);
+
+        return bfr;
+	}
 };
 
 extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
@@ -209,18 +234,19 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
         tra_call(tra, TRA_FUNCTION_SHOW_ALIASES_ALIAS_1, &userdata, TRA_VARIABLE_ax_ALIAS_60, TRA_VARIABLE_ax_ALIAS_61, reply);
 		return JNI_TRUE;
     }
-    catch (runtime_error&  err) {
+    catch (const runtime_error&  err) {
 
-        cout << "exception | " << err.what() << endl;
+    	DEBUG_PRINT("exception | %s", err.what())
 
-        jvm.set_string_field("message", err.what());
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_10), err.what());
 
         return JNI_FALSE;
     }
     catch (...) {
 
-        jvm.set_string_field("message", "exception");
+//        jvm.set_string_field("message", "exception");
 
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_11), tra_get_string(tra, TRA_STRING_exception_ALIAS_11));
         return JNI_FALSE;
     }
 }
@@ -237,7 +263,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
     	const Stamps stamps;
 
     	Status status(error);
-    	status << "FlcErrorCreate" << FlcErrorCreate(error);
+    	status["FlcErrorCreate"] = FlcErrorCreate(error);
 
     	LicensingWrapper licensing;
     	status["FlcLicensingCreate"] = FlcLicensingCreate(licensing, identity_data, sizeof identity_data, nullptr, nullptr, error);
@@ -248,7 +274,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
     	status["FlcGetLicensingVersion"] = FlcGetLicensingVersion(licensing, &fneVersion, error);
 
     	const FlcChar*fneClientVersion;
-    	status["FlcGetLicensingVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
+    	status["FlcGetClientVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
 
     	// get host IDs
     	HostIdsWrapper hostids;
@@ -257,6 +283,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
     	FlcUInt32 size;
     	status["FlcHostIdsGetIdCount"] = FlcHostIdsGetIdCount(hostids, &size, error);
 
+    	DEBUG_PRINTLN("Host Ids");
     	for (FlcUInt32 i = 0; i < size; i++) {
     		FlcInt32 type;
     		const FlcChar* value;
@@ -268,36 +295,29 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
     	//TODO:
 //    	status["force fail"] = FLC_FALSE;
 
-        jvm.set_string_field("fneToolkitVersion", fneVersion);
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_fne_toolkit_version_ALIAS_1), fneVersion);
 
-    	struct tm time;
-    	strptime(stamps.datestamp.c_str(), "%b %e %Y", &time);
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_native_library_version_ALIAS_1), stamps.get_timestamp());
 
-    	char bfr[90];
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_compiler_version_ALIAS_1), stamps.get_gnu_version());
 
-    	strftime(bfr, sizeof bfr, "%Y-%m-%d", &time);
-        jvm.set_string_field("nativeLibraryVersion", string(bfr) + " " + stamps.timestamp);
-
-        snprintf(bfr, sizeof bfr, "%d.%d.%d", stamps.gnuc, stamps.gnuc_minor, stamps.gnuc_patch);
-        jvm.set_string_field("compilerVersion", bfr);
-
-        snprintf(bfr, sizeof bfr, "%s.%s.%s.%s", TRA_VERSION_MAJOR, TRA_VERSION_MINOR, TRA_VERSION_MAINT, TRA_VERSION_BUILD);
-        jvm.set_string_field("traVersion", bfr);
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1), stamps.get_tra_version());
 
 		return JNI_TRUE;
     }
-    catch (runtime_error&  err) {
+    catch (const runtime_error&  err) {
 
-        cout << "exception | " << err.what() << endl;
+    	DEBUG_PRINT("exception | %s", err.what())
 
-        jvm.set_string_field("message", err.what());
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_13), err.what());
 
         return JNI_FALSE;
     }
     catch (...) {
 
-        jvm.set_string_field("message", "exception");
+//        jvm.set_string_field("message", "exception");
 
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_13), tra_get_string(tra, TRA_STRING_exception_ALIAS_13));
         return JNI_FALSE;
     }
 }
@@ -325,18 +345,19 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
 
         return TFT(tra, TRA_VARIABLE_zero_ALIAS_1) + userdata.get_status();
     }
-    catch (runtime_error&  err) {
+    catch (const runtime_error&  err) {
 
-        cout << "exception | " << err.what() << endl;
+    	DEBUG_PRINT("exception | %s", err.what())
 
-        jvm.set_string_field("message", err.what());
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_14), err.what());
 
         return JNI_FALSE;
     }
     catch (...) {
 
-        jvm.set_string_field("message", "exception");
+//        jvm.set_string_field("message", "exception");
 
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_15), tra_get_string(tra, TRA_STRING_exception_ALIAS_15));
         return JNI_FALSE;
     }
 }
