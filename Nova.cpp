@@ -78,10 +78,10 @@ public:
 };
 
 extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
-	DEBUG_PRINT("cf_save_jni_field_aliases_good %p", (void*)p);
+	DEBUG_PRINT("cf_save_jni_field_aliases_good %p", static_cast<void*>(p));
 	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
+		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
         IdentityMessagePayload payload;
 
@@ -103,10 +103,10 @@ extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
 }
 
 extern "C" int cf_save_jni_field_aliases_bad(tra_Data *const p) {
-	DEBUG_PRINT("cf_save_jni_field_aliases_bad %p", (void*)p);
+	DEBUG_PRINT("cf_save_jni_field_aliases_bad %p", static_cast<void*>(p));
 	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
+		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
         IdentityMessagePayload payload;
 
@@ -128,11 +128,11 @@ extern "C" int cf_save_jni_field_aliases_bad(tra_Data *const p) {
 }
 
 extern "C" int do_initialize(tra_Data *const p) {
-	DEBUG_PRINT("do_initialize %p", (void*)p);
+	DEBUG_PRINT("do_initialize %p", static_cast<void*>(p));
 
 	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
+		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
         // invoke cf_save_jni_field_aliases_bad */
         tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_3, TRA_VARIABLE_ax_ALIAS_4, pud->get_reply_address());
@@ -147,10 +147,10 @@ extern "C" int do_initialize(tra_Data *const p) {
 }
 
 extern "C" int do_initialize_success(tra_Data*const p) {
-	DEBUG_PRINT("do_initialize_success %p", (void*)p);
+	DEBUG_PRINT("do_initialize_success %p", static_cast<void*>(p));
 	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
+		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
         // invoke cf_save_jni_field_aliases_success */
         tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, pud->get_reply_address());
@@ -164,10 +164,10 @@ extern "C" int do_initialize_success(tra_Data*const p) {
 }
 
 extern "C" int do_initialize_fail(tra_Data*const p) {
-	DEBUG_PRINT("do_initialize_fail %p", (void*)p);
+	DEBUG_PRINT("do_initialize_fail %p", static_cast<void*>(p));
 	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
+		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
         tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_BAD_ALIAS_2, pud, TRA_VARIABLE_ax_ALIAS_5, TRA_VARIABLE_ax_ALIAS_6, pud->get_reply_address());
 
@@ -180,10 +180,10 @@ extern "C" int do_initialize_fail(tra_Data*const p) {
 }
 
 extern "C" int cf_tamper_detected(tra_Data*const p) {
-	DEBUG_PRINT("cf_tamper_detected %p", (void*)p);
+	DEBUG_PRINT("cf_tamper_detected %p", static_cast<void*>(p));
 	try {
-		UserData*const pud = static_cast<UserData*>(tra_get_user_data(p));
-        DEBUG_PRINT("user data %p", (void*)pud);
+		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
+        DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
 	    return  1;
 	}
@@ -201,7 +201,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
 
     try {
     	UserData userdata(tra);
-        DEBUG_PRINT("user data %p", (void*)&userdata);
+        DEBUG_PRINT("user data %p", static_cast<void*>(&userdata));
 
         auto reply = userdata.get_reply_address();
 
@@ -292,7 +292,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
             DEBUG_PRINT("%2.2d | %s | %s", type, FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)), value);
     	}
 
-    	//TODO:
+
 //    	status["force fail"] = FLC_FALSE;
 
         jvm.set_string_field(tra_get_string(tra, TRA_STRING_fne_toolkit_version_ALIAS_1), fneVersion);
@@ -331,7 +331,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
     try {
     	UserData userdata(tra);
 
-        DEBUG_PRINT("user data %p", (void*)&userdata);
+        DEBUG_PRINT("user data %p", static_cast<void*>(&userdata));
 
     	tra_if(tra, TRA_SNIF_initialize_ALIAS_1, &userdata);
 
@@ -361,4 +361,115 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
         return JNI_FALSE;
     }
 }
+
+class Success final {
+    const std::string message;
+public:
+    Success(const std::string&message) : message(message) {
+
+    }
+    ~Success() = default;
+
+    const char* get_message() const {
+        return message.c_str();
+    }
+};
+
+extern "C" LIB_EXPORT int test() {
+
+    DEBUG_PRINTLN("NovaJni tests")
+
+    try {
+        const Stamps stamps;
+
+        DEBUG_PRINTLN("")
+        DEBUG_PRINTLN("NovaJni");
+        DEBUG_PRINTLN("-------");
+        DEBUG_PRINT("Version     | %s", stamps.get_timestamp().c_str());
+        DEBUG_PRINT("TRA version | %s", stamps.get_tra_version().c_str());
+        DEBUG_PRINT("GNU version | %s", stamps.get_gnu_version().c_str());
+
+
+        DEBUG_PRINTLN("")
+        DEBUG_PRINTLN("TRA load test");
+        DEBUG_PRINTLN("-------------");
+
+        UserData userdata(tra);
+        DEBUG_PRINT("user data %p", static_cast<void*>(&userdata));
+
+        DEBUG_PRINTLN("")
+        DEBUG_PRINTLN("TRA tests");
+        DEBUG_PRINTLN("---------");
+        DEBUG_PRINT("test 1 | %s", tra_get_string(tra, TRA_STRING_ok_ALIAS_1));
+        DEBUG_PRINT("test 2 | %s", tra_get_string(tra, TRA_STRING_identity_field_name_ALIAS_1));
+        DEBUG_PRINT("test 3 | %s", tra_get_string(tra, TRA_STRING_compiler_version_ALIAS_1));
+        DEBUG_PRINT("test 4 | %s", tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_1));
+
+        DEBUG_PRINTLN("")
+        DEBUG_PRINTLN("FNE tests");
+        DEBUG_PRINTLN("---------");
+
+        ErrorWrapper error;
+
+        Status status(error);
+        status["FlcErrorCreate"] = FlcErrorCreate(error);
+
+        LicensingWrapper licensing;
+        status["FlcLicensingCreate"] = FlcLicensingCreate(licensing, identity_data, sizeof identity_data, nullptr, nullptr, error);
+
+        status["FlcSetVmDetectionEnabled"] =  FlcSetVmDetectionEnabled(licensing, FLC_TRUE, error);
+
+        const FlcChar*fneVersion;
+        status["FlcGetLicensingVersion"] = FlcGetLicensingVersion(licensing, &fneVersion, error);
+        DEBUG_PRINT("FNE version | %s", fneVersion);
+
+        const FlcChar*fneClientVersion;
+        status["FlcGetClientVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
+        DEBUG_PRINT("FNE client version | %s", fneVersion);
+
+        // get host IDs
+        HostIdsWrapper hostids;
+        status["FlcGetHostIds"] = FlcGetHostIds(licensing, hostids, error);
+
+        FlcUInt32 size;
+        status["FlcHostIdsGetIdCount"] = FlcHostIdsGetIdCount(hostids, &size, error);
+
+        DEBUG_PRINTLN("")
+        DEBUG_PRINTLN("Available Host Ids");
+        DEBUG_PRINTLN("------------------");
+        for (FlcUInt32 i = 0; i < size; i++) {
+            FlcInt32 type;
+            const FlcChar* value;
+            status["FlcHostIdsGetId"] =  FlcHostIdsGetId(hostids, i, &type, &value, error);
+
+            DEBUG_PRINT("%2.2d | %s | %s", type, FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)), value);
+        }
+
+        DEBUG_PRINTLN("")
+
+        throw Success("All tests passed successfully");
+
+        return 0;
+    }
+    catch (const Success&  err) {
+
+        DEBUG_PRINTLN("")
+        DEBUG_PRINTLN(err.get_message());
+
+        return 0;
+    }
+    catch (const runtime_error&  err) {
+
+        DEBUG_PRINT("exception | %s", err.what())
+
+        return -1;
+    }
+    catch (...) {
+
+        DEBUG_PRINTLN("exception...");
+
+        return -2;
+    }
+}
+
 

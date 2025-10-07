@@ -5,7 +5,7 @@
 #ifdef DUMP
 
 #define DEBUG_PRINT(format, ...) { printf(format, ##__VA_ARGS__); printf("\n"); }
-#define DEBUG_PRINTLN(a) { printf("%s...\n", a); }
+#define DEBUG_PRINTLN(a) { printf("%s\n", a); }
 
 #else
 

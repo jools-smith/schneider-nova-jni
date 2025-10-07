@@ -31,7 +31,10 @@ extern "C" {
 
 	int do_initialize_fail(tra_Data*const p);
 
+	int test();
 }
+
+
 
 #endif /* NOVA_H */
 

@@ -86,7 +86,7 @@ declare.strings.native_library_version = {
 	["aliases"] = 5,
 	["actions"] = { ["detect_tamper"] = true }
 }
-  
+
 declare.snif.initialize = { 
 	["predicate"] = "do_initialize",
 	["on_false"] = "do_initialize_fail",

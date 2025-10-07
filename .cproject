@@ -77,7 +77,7 @@
 									<listOptionValue builtIn="false" value="FlxCommonXT_pic"/>
 								</option>
 								<option id="gnu.cpp.link.option.soname.1222540758" name="Shared object name (-Wl,-soname=)" superClass="gnu.cpp.link.option.soname" value="" valueType="string"/>
-								<option id="gnu.cpp.link.option.implname.1098582899" name="Import Library name (-Wl,--out-implib=)" superClass="gnu.cpp.link.option.implname" value="" valueType="string"/>
+								<option id="gnu.cpp.link.option.implname.1098582899" name="Import Library name (-Wl,--out-implib=)" superClass="gnu.cpp.link.option.implname" value="dave" valueType="string"/>
 								<option id="gnu.cpp.link.option.defname.1784786743" name="DEF file name (-Wl,--output-def=)" superClass="gnu.cpp.link.option.defname" value="" valueType="string"/>
 								<option id="gnu.cpp.link.option.strip.2071371862" name="Omit all symbol information (-s)" superClass="gnu.cpp.link.option.strip" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.flags.357459287" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-no-pie" valueType="string"/>
@@ -95,6 +95,9 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding="fne-toolkit-2024-11" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -153,6 +156,9 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding="fne-toolkit-2024-11" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

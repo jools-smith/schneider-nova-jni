@@ -6,8 +6,8 @@
 #include <vector>
 
 class JNIHelper {
-    JNIEnv *const environment;
-    jobject object;
+    JNIEnv *const environment{};
+    jobject object{};
 
     static const std::string separator;
 
