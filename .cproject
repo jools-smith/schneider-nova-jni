@@ -99,7 +99,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="fne-toolkit-2024-11|test/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="test|flexnet_client-xt-c-x64_linux-2025.09.0|fne-toolkit-2024-11|test/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -113,8 +113,11 @@
 				<externalSettings>
 					<externalSetting>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/nova-jni"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/schneider-nova-jni"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/nova-jni/Release"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/schneider-nova-jni/Release"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="nova-jni" srcPrefixMapping="" srcRootPath=""/>
+						<entry flags="RESOLVED" kind="libraryFile" name="schneider-nova-jni" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
 				<extensions>
@@ -160,7 +163,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="fne-toolkit-2024-11" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="test|flexnet_client-xt-c-x64_linux-2025.09.0|fne-toolkit-2024-11" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
