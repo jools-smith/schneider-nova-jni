@@ -375,39 +375,53 @@ public:
     }
 };
 
-extern "C" LIB_EXPORT int test() {
+/** TEST HARNESS **/
+static void caption(const string& message, const bool underline=true) {
+	cout << endl;
+	cout << message << endl;
+	if (underline) {
+		cout << string(message.length(), '-') << endl;
+	}
+}
 
-    DEBUG_PRINTLN("NovaJni tests")
+static void print(const string& message, const string&data) {
+	cout << message << " | "  << data << endl;
+}
+
+static void print(const string& message, const string&data1, const string&data2) {
+	cout << message << " | "  << data1 << " | "  << data2 << endl;
+}
+
+extern "C" LIB_EXPORT int schneider_nova_jni_test() {
+
+	cout << __FUNCTION__ << "(" << (void*)&schneider_nova_jni_test << ") " << __FILE__ << " @ " << __LINE__ << endl;
+
+//    DEBUG_PRINTLN("NovaJni tests")
 
     try {
         const Stamps stamps;
 
-        DEBUG_PRINTLN("")
-        DEBUG_PRINTLN("NovaJni");
-        DEBUG_PRINTLN("-------");
-        DEBUG_PRINT("Version     | %s", stamps.get_timestamp().c_str());
-        DEBUG_PRINT("TRA version | %s", stamps.get_tra_version().c_str());
-        DEBUG_PRINT("GNU version | %s", stamps.get_gnu_version().c_str());
+        caption("NovaJni");
+        print("Version    ", stamps.get_timestamp());
+        print("TRA version", stamps.get_tra_version());
+        print("GNU version", stamps.get_gnu_version());
 
-
-        DEBUG_PRINTLN("")
-        DEBUG_PRINTLN("TRA load test");
-        DEBUG_PRINTLN("-------------");
-
+        caption("TRA load test");
         UserData userdata(tra);
-        DEBUG_PRINT("user data %p", static_cast<void*>(&userdata));
+    	cout << "User data " << &userdata << endl;
 
-        DEBUG_PRINTLN("")
-        DEBUG_PRINTLN("TRA tests");
-        DEBUG_PRINTLN("---------");
-        DEBUG_PRINT("test 1 | %s", tra_get_string(tra, TRA_STRING_ok_ALIAS_1));
-        DEBUG_PRINT("test 2 | %s", tra_get_string(tra, TRA_STRING_identity_field_name_ALIAS_1));
-        DEBUG_PRINT("test 3 | %s", tra_get_string(tra, TRA_STRING_compiler_version_ALIAS_1));
-        DEBUG_PRINT("test 4 | %s", tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_1));
+		caption("TRA string tests");
+		print("a", tra_get_string(tra, TRA_STRING_ok_ALIAS_1));
+		print("b", tra_get_string(tra, TRA_STRING_identity_field_name_ALIAS_1));
+		print("c", tra_get_string(tra, TRA_STRING_compiler_version_ALIAS_1));
+		print("d", tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_1));
+		print("d", tra_get_string(tra, TRA_STRING_exception_ALIAS_1));
+		print("d", tra_get_string(tra, TRA_STRING_native_library_version_ALIAS_1));
+		print("d", tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1));
+		print("d", tra_get_string(tra, TRA_STRING_fne_toolkit_version_ALIAS_1));
+		print("d", tra_get_string(tra, TRA_STRING_tamper_detected_ALIAS_1));
 
-        DEBUG_PRINTLN("")
-        DEBUG_PRINTLN("FNE tests");
-        DEBUG_PRINTLN("---------");
+        caption("FNE tests");
 
         ErrorWrapper error;
 
@@ -421,11 +435,11 @@ extern "C" LIB_EXPORT int test() {
 
         const FlcChar*fneVersion;
         status["FlcGetLicensingVersion"] = FlcGetLicensingVersion(licensing, &fneVersion, error);
-        DEBUG_PRINT("FNE version | %s", fneVersion);
+        print("FNE version", fneVersion);
 
         const FlcChar*fneClientVersion;
         status["FlcGetClientVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
-        DEBUG_PRINT("FNE client version | %s", fneVersion);
+        print("FNE client version", fneVersion);
 
         // get host IDs
         HostIdsWrapper hostids;
@@ -434,18 +448,17 @@ extern "C" LIB_EXPORT int test() {
         FlcUInt32 size;
         status["FlcHostIdsGetIdCount"] = FlcHostIdsGetIdCount(hostids, &size, error);
 
-        DEBUG_PRINTLN("")
-        DEBUG_PRINTLN("Available Host Ids");
-        DEBUG_PRINTLN("------------------");
+    	caption("Available Hosts");
         for (FlcUInt32 i = 0; i < size; i++) {
             FlcInt32 type;
             const FlcChar* value;
             status["FlcHostIdsGetId"] =  FlcHostIdsGetId(hostids, i, &type, &value, error);
 
-            DEBUG_PRINT("%2.2d | %s | %s", type, FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)), value);
+            print(to_string(i), FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)) , value);
+//            cout << i << " | " << FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)) << " | " << value << endl;
         }
 
-        DEBUG_PRINTLN("")
+    	cout << endl;
 
         throw Success("All tests passed successfully");
 
@@ -453,20 +466,22 @@ extern "C" LIB_EXPORT int test() {
     }
     catch (const Success&  err) {
 
-        DEBUG_PRINTLN("")
-        DEBUG_PRINTLN(err.get_message());
+    	caption("Success handler", false);
+     	cout << err.get_message() << endl;
 
         return 0;
     }
     catch (const runtime_error&  err) {
 
-        DEBUG_PRINT("exception | %s", err.what())
+    	caption("Error handler", false);
+     	cout << "exception | " << err.what() << endl;
 
         return -1;
     }
     catch (...) {
 
-        DEBUG_PRINTLN("exception...");
+    	caption("Exception handler", false);
+     	cout << "unexpected exception..." << endl;
 
         return -2;
     }
