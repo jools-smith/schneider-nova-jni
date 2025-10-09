@@ -1,5 +1,4 @@
-#ifndef USER_DATA_H
-#define USER_DATA_H
+#pragma once
 
 #include "dump.h"
 
@@ -98,4 +97,3 @@ public:
     ~UserData() = default;
 };
 
-#endif

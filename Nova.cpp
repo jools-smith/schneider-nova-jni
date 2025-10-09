@@ -33,12 +33,15 @@ using namespace std;
  * Wrap tra_State pointer for lazy initialization
  */
 
+
 static TraWrapper tra;
 
 /**
  * wrap time-stamps and compiler versions
  */
+#define STAMP_BUFFER_SIZE 64
 class Stamps {
+
 	const string datestamp;
 	const string timestamp;
 
@@ -51,7 +54,7 @@ public:
 	}
 
 	std::string get_timestamp() const {
-    	char bfr[64];
+    	char bfr[STAMP_BUFFER_SIZE];
 		struct tm time;
 
 		strptime(datestamp.c_str(), "%b %e %Y", &time);
@@ -61,7 +64,7 @@ public:
 	}
 
 	std::string get_gnu_version() const {
-		char bfr[64];
+		char bfr[STAMP_BUFFER_SIZE];
 
         snprintf(bfr, sizeof bfr, "%d.%d.%d", gnuc, gnuc_minor, gnuc_patch);
 
@@ -69,7 +72,7 @@ public:
 	}
 
 	std::string get_tra_version() const {
-    	char bfr[64];
+    	char bfr[STAMP_BUFFER_SIZE];
 
         snprintf(bfr, sizeof bfr, "%s.%s.%s.%s", TRA_VERSION_MAJOR, TRA_VERSION_MINOR, TRA_VERSION_MAINT, TRA_VERSION_BUILD);
 
@@ -384,107 +387,130 @@ static void caption(const string& message, const bool underline=true) {
 	}
 }
 
-static void print(const string& message, const string&data) {
+static void prints(const string& message, const string&data) {
 	cout << message << " | "  << data << endl;
 }
 
-static void print(const string& message, const string&data1, const string&data2) {
+static void printl(const string& message, const long data) {
+  cout << message << " | " << dec << data << endl;
+}
+
+static void printp(const string& message, const void* data) {
+  cout << message << " | " << hex << data << endl;
+}
+
+static void prints(const string& message, const string&data1, const string&data2) {
 	cout << message << " | "  << data1 << " | "  << data2 << endl;
 }
 
 extern "C" LIB_EXPORT int schneider_nova_jni_test() {
 
-	cout << __FUNCTION__ << "(" << (void*)&schneider_nova_jni_test << ") " << __FILE__ << " @ " << __LINE__ << endl;
+  caption(__FUNCTION__);
+  printp("Address", reinterpret_cast<void*>(&schneider_nova_jni_test));
+  prints("File   ", __FILE__);
+  printl("Line   ", __LINE__);
 
-//    DEBUG_PRINTLN("NovaJni tests")
+  tra.enable();
 
-    try {
-        const Stamps stamps;
+//  cout << __FUNCTION__ << "(" << reinterpret_cast<void*>(&schneider_nova_jni_test) << ") " << __FILE__ << " @ " << __LINE__ << endl;
 
-        caption("NovaJni");
-        print("Version    ", stamps.get_timestamp());
-        print("TRA version", stamps.get_tra_version());
-        print("GNU version", stamps.get_gnu_version());
+  try {
+    const Stamps stamps;
 
-        caption("TRA load test");
-        UserData userdata(tra);
-    	cout << "User data " << &userdata << endl;
+    caption("NovaJni");
+    prints("Version    ", stamps.get_timestamp());
+    prints("TRA version", stamps.get_tra_version());
+    prints("GNU version", stamps.get_gnu_version());
 
-		caption("TRA string tests");
-		print("a", tra_get_string(tra, TRA_STRING_ok_ALIAS_1));
-		print("b", tra_get_string(tra, TRA_STRING_identity_field_name_ALIAS_1));
-		print("c", tra_get_string(tra, TRA_STRING_compiler_version_ALIAS_1));
-		print("d", tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_1));
-		print("d", tra_get_string(tra, TRA_STRING_exception_ALIAS_1));
-		print("d", tra_get_string(tra, TRA_STRING_native_library_version_ALIAS_1));
-		print("d", tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1));
-		print("d", tra_get_string(tra, TRA_STRING_fne_toolkit_version_ALIAS_1));
-		print("d", tra_get_string(tra, TRA_STRING_tamper_detected_ALIAS_1));
+    caption("TRA load test");
+    UserData userdata(tra);
+    cout << "User data " << &userdata << endl;
 
-        caption("FNE tests");
+    int value;
+    caption("TRA integer tests");
+    tra_get_value(tra, TRA_VARIABLE_zero_ALIAS_1, &value);
+    printl("a", value);
+    tra_get_value(tra, TRA_VARIABLE_one_ALIAS_1, &value);
+    printl("b", value);
+    tra_get_value(tra, TRA_VARIABLE_minus_one_ALIAS_1, &value);
+    printl("c", value);
+    tra_get_value(tra, TRA_VARIABLE_ax_ALIAS_1, &value);
+    printl("d", value);
 
-        ErrorWrapper error;
+    caption("TRA string tests");
+    prints("a", tra_get_string(tra, TRA_STRING_ok_ALIAS_1));
+    prints("b", tra_get_string(tra, TRA_STRING_identity_field_name_ALIAS_1));
+    prints("c", tra_get_string(tra, TRA_STRING_compiler_version_ALIAS_1));
+    prints("d", tra_get_string(tra, TRA_STRING_message_field_name_ALIAS_1));
+    prints("e", tra_get_string(tra, TRA_STRING_exception_ALIAS_1));
+    prints("f", tra_get_string(tra, TRA_STRING_native_library_version_ALIAS_1));
+    prints("g", tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1));
+    prints("h", tra_get_string(tra, TRA_STRING_fne_toolkit_version_ALIAS_1));
+    prints("i", tra_get_string(tra, TRA_STRING_tamper_detected_ALIAS_1));
 
-        Status status(error);
-        status["FlcErrorCreate"] = FlcErrorCreate(error);
+    caption("FNE tests");
 
-        LicensingWrapper licensing;
-        status["FlcLicensingCreate"] = FlcLicensingCreate(licensing, identity_data, sizeof identity_data, nullptr, nullptr, error);
+    ErrorWrapper error;
 
-        status["FlcSetVmDetectionEnabled"] =  FlcSetVmDetectionEnabled(licensing, FLC_TRUE, error);
+    Status status(error);
+    status["FlcErrorCreate"] = FlcErrorCreate(error);
 
-        const FlcChar*fneVersion;
-        status["FlcGetLicensingVersion"] = FlcGetLicensingVersion(licensing, &fneVersion, error);
-        print("FNE version", fneVersion);
+    LicensingWrapper licensing;
+    status["FlcLicensingCreate"] = FlcLicensingCreate(licensing, identity_data, sizeof identity_data, nullptr, nullptr,
+        error);
 
-        const FlcChar*fneClientVersion;
-        status["FlcGetClientVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
-        print("FNE client version", fneVersion);
+    status["FlcSetVmDetectionEnabled"] = FlcSetVmDetectionEnabled(licensing, FLC_TRUE, error);
 
-        // get host IDs
-        HostIdsWrapper hostids;
-        status["FlcGetHostIds"] = FlcGetHostIds(licensing, hostids, error);
+    const FlcChar *fneVersion;
+    status["FlcGetLicensingVersion"] = FlcGetLicensingVersion(licensing, &fneVersion, error);
+    prints("FNE version", fneVersion);
 
-        FlcUInt32 size;
-        status["FlcHostIdsGetIdCount"] = FlcHostIdsGetIdCount(hostids, &size, error);
+    const FlcChar *fneClientVersion;
+    status["FlcGetClientVersion"] = FlcGetClientVersion(licensing, &fneClientVersion, error);
+    prints("FNE client version", fneVersion);
 
-    	caption("Available Hosts");
-        for (FlcUInt32 i = 0; i < size; i++) {
-            FlcInt32 type;
-            const FlcChar* value;
-            status["FlcHostIdsGetId"] =  FlcHostIdsGetId(hostids, i, &type, &value, error);
+    // get host IDs
+    HostIdsWrapper hostids;
+    status["FlcGetHostIds"] = FlcGetHostIds(licensing, hostids, error);
 
-            print(to_string(i), FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)) , value);
-//            cout << i << " | " << FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)) << " | " << value << endl;
-        }
+    FlcUInt32 size;
+    status["FlcHostIdsGetIdCount"] = FlcHostIdsGetIdCount(hostids, &size, error);
 
-    	cout << endl;
+    caption("Available Hosts");
+    for (FlcUInt32 i = 0; i < size; i++) {
+      FlcInt32 type;
+      const FlcChar *value;
+      status["FlcHostIdsGetId"] = FlcHostIdsGetId(hostids, i, &type, &value, error);
 
-        throw Success("All tests passed successfully");
-
-        return 0;
+      prints(to_string(i), FneUtils::get_host_id_type(static_cast<FlcHostIdType>(type)), value);
     }
-    catch (const Success&  err) {
 
-    	caption("Success handler", false);
-     	cout << err.get_message() << endl;
+    cout << endl;
 
-        return 0;
-    }
-    catch (const runtime_error&  err) {
+    throw Success("All tests passed successfully");
 
-    	caption("Error handler", false);
-     	cout << "exception | " << err.what() << endl;
+    return 0;
+  }
+  catch (const Success &err) {
 
-        return -1;
-    }
-    catch (...) {
+    caption("Success handler", false);
+    cout << err.get_message() << endl;
 
-    	caption("Exception handler", false);
-     	cout << "unexpected exception..." << endl;
+    return 0;
+  }
+  catch (const runtime_error &err) {
 
-        return -2;
-    }
+    caption("Error handler", false);
+    cout << "exception | " << err.what() << endl;
+
+    return -1;
+  }
+  catch (...) {
+
+    caption("Exception handler", false);
+    cout << "unexpected exception..." << endl;
+
+    return -2;
+  }
 }
-
 

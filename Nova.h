@@ -12,8 +12,7 @@
  * Modified 25 June 2026
  */
 
-#ifndef NOVA_H
-#define NOVA_H
+#pragma once
 
 #include "tra.h"
 
@@ -34,7 +33,4 @@ extern "C" {
 	int test();
 }
 
-
-
-#endif /* NOVA_H */
 
