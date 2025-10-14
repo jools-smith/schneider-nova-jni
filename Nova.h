@@ -16,7 +16,10 @@
 
 #include "tra.h"
 
-extern "C" {
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 	int cf_save_jni_field_aliases_good(tra_Data *const p);
 
@@ -30,7 +33,10 @@ extern "C" {
 
 	int do_initialize_fail(tra_Data*const p);
 
-	int test();
+	int schneider_nova_jni_test();
+
+#ifdef __cplusplus
 }
+#endif
 
 
