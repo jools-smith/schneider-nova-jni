@@ -4,8 +4,8 @@ LDLIBS=-L. -lNovaJni
 
 all: nova-jni-test-harness
 
-nova-jni-test-harness: test.c
-	g++ $(CFLAGS) $(IFLAGS) -o nova-jni-test-harness test.c $(LDLIBS)
+nova-jni-test-harness: nova-jni-test-harness.c
+	g++ $(CFLAGS) $(IFLAGS) -o nova-jni-test-harness nova-jni-test-harness.c $(LDLIBS)
 
 clean:
 	rm -f nova-jni-test-harness

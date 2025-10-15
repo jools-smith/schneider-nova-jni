@@ -22,13 +22,13 @@ static bool check_args(const int argc, const char*argv[], const char flag[], con
 }
 
 int main(const int argc, const char*argv[]) {
-  const bool noexecute = check_args(argc, argv, "-X", "--no-execute");
+  const bool execute = check_args(argc, argv, "-x", "--execute");
   const bool verbose = check_args(argc, argv, "-V", "--verbose");
   const bool help = check_args(argc, argv, "-h", "--help");
 
 	system("clear");
 
-	if (help || verbose || noexecute || check_args(argc, argv, "-v", "--version")) {
+	if (help || verbose || !execute || check_args(argc, argv, "-v", "--version")) {
 	  printf("+-------------------------+\n");
 	  printf("| NovaJni.so test harness |\n");
 	  printf("| %-23s |\n", __DATE__);
@@ -42,9 +42,9 @@ int main(const int argc, const char*argv[]) {
     printf("\n");
   }
 
-	if (help) {
+	if (help || argc == 1) {
     printf("-h --help           display help\n");
-	  printf("-X --no-execute     do not execute\n");
+	  printf("-x --execute        execute\n");
     printf("-V --verbose        verbose output\n");
     printf("-v --version        display version information\n");
     printf("-l --library-path   display library paths\n");
@@ -52,11 +52,11 @@ int main(const int argc, const char*argv[]) {
     printf("This application requres both NovaJni.so and libFlxCore64.so.2025.09 to be in the library path\n");
 	}
 	else {
-    if (noexecute) {
-      printf("execution omitted\n");
+    if (execute) {
+      schneider_nova_jni_test();
     }
     else {
-      schneider_nova_jni_test();
+      printf("execution not requested\n");
     }
   }
 
