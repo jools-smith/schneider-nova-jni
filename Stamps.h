@@ -13,8 +13,10 @@
 
 #define STAMP_BUFFER_SIZE 64
 class Stamps {
+  const std::string release;
   const std::string datestamp;
   const std::string timestamp;
+
 
 //  const std::string version;
 
@@ -22,6 +24,7 @@ class Stamps {
   const int gnuc_minor;
   const int gnuc_patch;
 public:
+  Stamps(const std::string&rel) : release(rel), datestamp(__DATE__), timestamp(__TIME__), gnuc(__GNUC__), gnuc_minor(__GNUC_MINOR__), gnuc_patch(__GNUC_PATCHLEVEL__){
 
   }
 
