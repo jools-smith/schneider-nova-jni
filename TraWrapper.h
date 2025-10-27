@@ -4,12 +4,12 @@
 
 #include "tra_gen/nova_declarative_data.h"
 
-class TraWrapper {
+class TraWrapper final {
     tra_State *m_tra_state;
     bool loggit;
 
 public:
-    TraWrapper() : m_tra_state(0), loggit(false) {
+    TraWrapper() : m_tra_state(nullptr), loggit(false) {
 #ifdef ENABLE_DEBUG_MACROS
       loggit = true;
 #endif
@@ -17,7 +17,7 @@ public:
 
     virtual ~TraWrapper();
 
-    void enable(const bool allow=true);
+    void enable(bool allow=true);
 
     /*!
      * Perform lazy load of TRA engine

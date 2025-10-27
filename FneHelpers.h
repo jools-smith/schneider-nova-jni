@@ -40,7 +40,7 @@ public:
 
 
 struct FneUtils {
-	static const char* get_host_id_type(const FlcHostIdType type);
+	static const char* get_host_id_type(FlcHostIdType type);
 };
 
 class ErrorWrapper final : public FneWrapperBase<struct flcError> {

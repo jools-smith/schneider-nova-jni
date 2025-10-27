@@ -12,7 +12,7 @@ class JNIHelper {
     static const std::string separator;
 
 public:
-    JNIHelper(JNIEnv *const env, jobject object) : environment(env), object(object ){
+    JNIHelper(JNIEnv *const env, jobject object) : environment(env), object(object){
     }
 
     void set_string_field(const std::string&field_name, const std::string&value) const;
