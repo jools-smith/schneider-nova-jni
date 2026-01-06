@@ -9,11 +9,9 @@
 #define LIB_EXPORT __attribute__ ((visibility ("default")))
 
 #include <ctime>
-#include <time.h>
 #include <string>
 #include <sstream>
-#include <set>
-#include <vector>
+#include <utility>
 
 using namespace std;
 
@@ -25,60 +23,20 @@ using namespace std;
 #include "IdentityClient.h"
 #include "TraWrapper.h"
 #include "UserData.h"
+#include "Stamps.h"
 
 #include "jni.h"
 #include "com_flexera_schneider_fnesigner_Nova.h"
 
-/*!
- * Wrap tra_State pointer for lazy initialization
- */
-
-
 static TraWrapper tra;
 
-/**
- * wrap time-stamps and compiler versions
- */
-#define STAMP_BUFFER_SIZE 64
-class Stamps {
-
-	const string datestamp;
-	const string timestamp;
-
-	const int gnuc;
-	const int gnuc_minor;
-	const int gnuc_patch;
-public:
-	Stamps() : datestamp(__DATE__), timestamp(__TIME__), gnuc(__GNUC__), gnuc_minor(__GNUC_MINOR__), gnuc_patch(__GNUC_PATCHLEVEL__) {
-
-	}
-
-	std::string get_timestamp() const {
-    	char bfr[STAMP_BUFFER_SIZE];
-		struct tm time;
-
-		strptime(datestamp.c_str(), "%b %e %Y", &time);
-
-		strftime(bfr, sizeof bfr, "%Y-%m-%d", &time);
-		return string(bfr) + " " + timestamp;
-	}
-
-	std::string get_gnu_version() const {
-		char bfr[STAMP_BUFFER_SIZE];
-
-        snprintf(bfr, sizeof bfr, "%d.%d.%d", gnuc, gnuc_minor, gnuc_patch);
-
-		return bfr;
-	}
-
-	std::string get_tra_version() const {
-    	char bfr[STAMP_BUFFER_SIZE];
-
-        snprintf(bfr, sizeof bfr, "%s.%s.%s.%s", TRA_VERSION_MAJOR, TRA_VERSION_MINOR, TRA_VERSION_MAINT, TRA_VERSION_BUILD);
-
-        return bfr;
-	}
-};
+static const Stamps stamps(
+#ifdef ENABLE_DEBUG_MACROS
+    "DEBUG"
+#else
+    "RELEASE"
+#endif
+);
 
 extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
 	DEBUG_PRINT("cf_save_jni_field_aliases_good %p", static_cast<void*>(p));
@@ -86,7 +44,7 @@ extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
 		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
-        IdentityMessagePayload payload;
+        IdentityMessagePayload payload{};
 
         tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_1, pud, TRA_STRING_identity_field_name_ALIAS_5, TRA_VARIABLE_ax_ALIAS_97, &payload.identity_name);
         tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_2, pud, TRA_STRING_identity_ALIAS_5, TRA_VARIABLE_ax_ALIAS_96, &payload.identity_value);
@@ -111,7 +69,7 @@ extern "C" int cf_save_jni_field_aliases_bad(tra_Data *const p) {
 		auto*const pud = static_cast<UserData*>(tra_get_user_data(p));
         DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
-        IdentityMessagePayload payload;
+        IdentityMessagePayload payload{};
 
         tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_5, pud, TRA_STRING_identity_field_name_ALIAS_4, TRA_VARIABLE_ax_ALIAS_87, &payload.identity_name);
         tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_6, pud, TRA_STRING_identity_bad_ALIAS_4, TRA_VARIABLE_ax_ALIAS_86, &payload.identity_value);
@@ -206,7 +164,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
     	UserData userdata(tra);
         DEBUG_PRINT("user data %p", static_cast<void*>(&userdata));
 
-        auto reply = userdata.get_reply_address();
+        const auto reply = userdata.get_reply_address();
 
         tra_call(tra, TRA_FUNCTION_CLEAR_ALIASES_ALIAS_1, &userdata, TRA_VARIABLE_ax_ALIAS_99, TRA_VARIABLE_ax_ALIAS_98, reply);
 
@@ -262,8 +220,6 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
 
     try {
     	ErrorWrapper error;
-
-    	const Stamps stamps;
 
     	Status status(error);
     	status["FlcErrorCreate"] = FlcErrorCreate(error);
@@ -368,7 +324,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
 class Success final {
     const std::string message;
 public:
-    Success(const std::string&message) : message(message) {
+    explicit Success(std::string message) : message(std::move(message)) {
 
     }
     ~Success() = default;
@@ -415,8 +371,6 @@ extern "C" LIB_EXPORT int schneider_nova_jni_test() {
 //  cout << __FUNCTION__ << "(" << reinterpret_cast<void*>(&schneider_nova_jni_test) << ") " << __FILE__ << " @ " << __LINE__ << endl;
 
   try {
-    const Stamps stamps;
-
     caption("NovaJni");
     prints("Version    ", stamps.get_timestamp());
     prints("TRA version", stamps.get_tra_version());
