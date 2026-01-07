@@ -50,7 +50,7 @@ options.certificate = {
 		[ "certificate_requirements" ] = "certificate leaf = H\"72D73F83D211D452883F8E38336C042880870702\" and anchor trusted",
 		[ "signer" ] = "Flexera Software LLC",
 		[ "issuer" ] = "DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1",
-		[ "serialnumber" ] = "07 1c f2 95 af dd ec 8c 60 cd 3c 20 f6 5f e7 fd ",
+		[ "serialnumber" ] = "06 89 75 81 52 b0 06 f4 3c a7 e6 8b 1a af 21 47 ",
 	},
 }
 
@@ -59,10 +59,10 @@ options.verify_modules = {
 		["FlxCore"] = { ["checksigned"] = "flex", ["lazy"] = true, ["target"] = "FlxCore64" },
 	},
 	[ "macosx" ] = {
-		["FlxCore"] = { ["checksigned"] = "flex", ["lazy"] = true, ["target"] = "FlxCore.2024.11" },
+		["FlxCore"] = { ["checksigned"] = "flex", ["lazy"] = true, ["target"] = "FlxCore.2025.09" },
 	},
 	[ "linux" ] = {
-		["FlxCore"] = { ["lazy"] = true, ["target"] = "FlxCore64.so.2024.11"},
+		["FlxCore"] = { ["lazy"] = true, ["target"] = "FlxCore64.so.2025.09"},
 	}
 }
 

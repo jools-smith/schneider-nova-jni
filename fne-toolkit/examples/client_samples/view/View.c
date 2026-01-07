@@ -207,11 +207,11 @@ int main(int argc, char * argv[])
 
     if (isContainerized)
     {
-         DisplayInfoString("Client is contained in a docker host");
+         DisplayInfoString("Client is contained in a docker/podman host");
     }
     else
     {
-         DisplayInfoString("Client is not contained in a docker host");
+         DisplayInfoString("Client is not contained in a docker/podman host");
     }
 
     /*---------------------------------------------------------------------*/

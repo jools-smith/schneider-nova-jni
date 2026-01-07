@@ -23,10 +23,7 @@ public:
 
   ~FieldWrapper() = default;
 
-  void reset() {
-    name = TRA_VARIABLE_minus_one_ALIAS_4;
-    value = TRA_VARIABLE_minus_one_ALIAS_5;
-  }
+  void reset();
 };
 
 struct IdentityMessagePayload final {
@@ -45,28 +42,31 @@ class UserData final {
   FieldWrapper message;
 
   TFT status;
+
+  UserData(const UserData&source) : m_tra(source.m_tra), reply(0), identity(source.m_tra), message(source.m_tra), status(source.m_tra, TRA_VARIABLE_minus_one_ALIAS_1){
+
+  }
+
+  UserData& operator =(const UserData&) {
+    return *this;
+  }
+
 public:
 
   UserData(TraWrapper &value) : m_tra(value), reply(0), identity(value), message(value), status(value, TRA_VARIABLE_minus_one_ALIAS_1) {
   }
 
+  ~UserData() = default;
+
   void release_all_strings();
 
-  const char* get_identity_name() {
-    return tra_get_string(m_tra, identity.name);
-  }
+  const char* get_identity_name();
 
-  const char* get_identity_value() {
-    return tra_get_string(m_tra, identity.value);
-  }
+  const char* get_identity_value();
 
-  const char* get_message_name() {
-    return tra_get_string(m_tra, message.name);
-  }
+  const char* get_message_name();
 
-  const char* get_message_value() {
-    return tra_get_string(m_tra, message.value);
-  }
+  const char* get_message_value();
 
   TFT& get_status() {
     return status;
@@ -80,17 +80,10 @@ public:
     return reply;
   }
 
-  void set_status(const TRA_VARIABLE_INDEX alias) {
-    status = TFT(m_tra, alias);
-  }
+  void set_status(const TRA_VARIABLE_INDEX alias);
 
   void set_identity_message_values(TRA_STRING_INDEX alias_1, TRA_STRING_INDEX alias_2, TRA_STRING_INDEX alias_3, TRA_STRING_INDEX alias_4);
 
-  void set_identity_message_values(const IdentityMessagePayload &payload) {
-    set_identity_message_values(static_cast<TRA_STRING_INDEX>(payload.identity_name), static_cast<TRA_STRING_INDEX>(payload.identity_value), static_cast<TRA_STRING_INDEX>(payload.message_name),
-        static_cast<TRA_STRING_INDEX>(payload.message_value));
-  }
-
-  ~UserData() = default;
+  void set_identity_message_values(const IdentityMessagePayload &payload);
 };
 

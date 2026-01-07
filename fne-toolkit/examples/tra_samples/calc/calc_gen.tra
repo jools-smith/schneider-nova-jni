@@ -60,10 +60,10 @@ options.verify_modules = {
 		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore64" },
 	},
 	[ "macosx" ] = {
-		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore.2024.11" },
+		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore.2025.09" },
 	},
 	[ "linux" ] = {
-		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore64.so.2024.11" },
+		["FlxCore"] = { ["checksum"] = true, ["lazy"] = true, ["target"] = "FlxCore64.so.2025.09" },
 	}
 }
 options.report = "report_callback"

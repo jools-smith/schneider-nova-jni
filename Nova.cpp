@@ -262,6 +262,8 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
 
         jvm.set_string_field(tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1), stamps.get_tra_version());
 
+        jvm.set_string_field(tra_get_string(tra, TRA_STRING_identity_secret_field_name_ALIAS_2), tra_get_string(tra, TRA_STRING_identity_secret_ALIAS_2));
+
 		return JNI_TRUE;
     }
     catch (const runtime_error&  err) {

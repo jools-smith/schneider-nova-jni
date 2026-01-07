@@ -1,5 +1,5 @@
 /****************************************************************************
-  Copyright (c) 2012-2024 Flexera Software LLC.
+  Copyright (c) 2012-2025 Flexera Software LLC.
   All Rights Reserved.
   This software has been provided pursuant to a License Agreement
   containing restrictions on its use.  This software contains
