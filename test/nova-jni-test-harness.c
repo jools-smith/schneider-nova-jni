@@ -43,13 +43,13 @@ int main(const int argc, const char*argv[]) {
   }
 
 	if (help || argc == 1) {
-    printf("-h --help           display help\n");
-	  printf("-x --execute        execute\n");
-    printf("-V --verbose        verbose output\n");
-    printf("-v --version        display version information\n");
-    printf("-l --library-path   display library paths\n");
-    printf("\n");
-    printf("This application requres both NovaJni.so and libFlxCore64.so.2025.09 to be in the library path\n");
+	    printf("-h --help           display help\n");
+		printf("-x --execute        execute\n");
+	    printf("-V --verbose        verbose output\n");
+	    printf("-v --version        display version information\n");
+	    printf("-l --library-path   display library paths\n");
+	    printf("\n");
+	    printf("This application requres both NovaJni.so and libFlxCore64.so.2025.09 to be in the library path\n");
 	}
 	else {
     if (execute) {

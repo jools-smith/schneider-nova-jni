@@ -47,7 +47,10 @@ extern "C" int cf_save_jni_field_aliases_good(tra_Data *const p) {
     IdentityMessagePayload payload { };
 
     tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_1, pud, TRA_STRING_identity_field_name_ALIAS_5, TRA_VARIABLE_ax_ALIAS_97, &payload.identity_name);
+    // JPS 2026-02-10 this is now the \bo identity not an encrypted version
     tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_2, pud, TRA_STRING_identity_ALIAS_5, TRA_VARIABLE_ax_ALIAS_96, &payload.identity_value);
+
+
     tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_3, pud, TRA_STRING_message_field_name_ALIAS_5, TRA_VARIABLE_ax_ALIAS_95, &payload.message_name);
     tra_call(tra, TRA_FUNCTION_GET_ALIAS_FROM_SET_ALIAS_4, pud, TRA_STRING_ok_ALIAS_5, TRA_VARIABLE_ax_ALIAS_94, &payload.message_value);
 
@@ -114,6 +117,7 @@ extern "C" int do_initialize_success(tra_Data *const p) {
     DEBUG_PRINT("user data %p", static_cast<void*>(pud));
 
     // invoke cf_save_jni_field_aliases_success */
+    tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, pud->get_reply_address());
     tra_call(tra, TRA_FUNCTION_SAVE_FIELD_ALIASES_GOOD_ALIAS_1, pud, TRA_VARIABLE_ax_ALIAS_1, TRA_VARIABLE_ax_ALIAS_2, pud->get_reply_address());
 
     return TFT(tra, TRA_VARIABLE_zero_ALIAS_4) + TFT(tra, TRA_VARIABLE_one_ALIAS_4);
@@ -261,7 +265,7 @@ extern "C" LIB_EXPORT jboolean JNICALL Java_com_flexera_schneider_fnesigner_Nova
 
     jvm.set_string_field(tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1), stamps.get_tra_version());
 
-    jvm.set_string_field(tra_get_string(tra, TRA_STRING_identity_secret_field_name_ALIAS_2), tra_get_string(tra, TRA_STRING_identity_secret_ALIAS_2));
+//    jvm.set_string_field(tra_get_string(tra, TRA_STRING_identity_secret_field_name_ALIAS_2), tra_get_string(tra, TRA_STRING_identity_secret_ALIAS_2));
 
     return JNI_TRUE;
   }
@@ -402,8 +406,8 @@ extern "C" LIB_EXPORT int schneider_nova_jni_test() {
     prints("g", tra_get_string(tra, TRA_STRING_tra_version_ALIAS_1));
     prints("h", tra_get_string(tra, TRA_STRING_fne_toolkit_version_ALIAS_1));
     prints("i", tra_get_string(tra, TRA_STRING_tamper_detected_ALIAS_1));
-    prints("j", tra_get_string(tra, TRA_STRING_identity_secret_field_name_ALIAS_1));
-    prints("k", tra_get_string(tra, TRA_STRING_identity_secret_ALIAS_1));
+//    prints("j", tra_get_string(tra, TRA_STRING_identity_secret_field_name_ALIAS_1));
+//    prints("k", tra_get_string(tra, TRA_STRING_identity_secret_ALIAS_1));
 
     caption("FNE tests");
 
